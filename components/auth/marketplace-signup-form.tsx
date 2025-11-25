@@ -358,7 +358,7 @@ export function MarketplaceSignupForm() {
                 </FormItem>
               )}
             />
-            <div className="flex gap-4">
+            <div className="flex gap-4 flex-col">
               <Button
                 type="button"
                 variant="outline"
