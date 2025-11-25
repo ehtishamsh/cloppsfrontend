@@ -1,15 +1,22 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { toast } from "sonner"
-import { Loader2, Upload, CheckCircle2 } from "lucide-react"
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { toast } from "sonner";
+import { Loader2, Upload, CheckCircle2 } from "lucide-react";
 
 const personalInfoSchema = z.object({
   firstName: z.string().min(2, "First name is required"),
@@ -17,7 +24,7 @@ const personalInfoSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Phone number is required"),
   password: z.string().min(8, "Password must be at least 8 characters"),
-})
+});
 
 const businessInfoSchema = z.object({
   businessName: z.string().min(2, "Business name is required"),
@@ -29,17 +36,17 @@ const businessInfoSchema = z.object({
   businessPhone: z.string().min(10, "Business phone is required"),
   businessEmail: z.string().email("Invalid email address"),
   website: z.string().url("Invalid URL").optional().or(z.literal("")),
-})
+});
 
 // Combined schema for final submission
-const formSchema = personalInfoSchema.merge(businessInfoSchema)
+const formSchema = personalInfoSchema.merge(businessInfoSchema);
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
 export function MarketplaceSignupForm() {
-  const [step, setStep] = useState(1)
-  const [isLoading, setIsLoading] = useState(false)
-  const [logo, setLogo] = useState<File | null>(null)
+  const [step, setStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  const [logo, setLogo] = useState<File | null>(null);
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -60,51 +67,67 @@ export function MarketplaceSignupForm() {
       website: "",
     },
     mode: "onChange",
-  })
+  });
 
-  const { trigger, handleSubmit } = form
+  const { trigger, handleSubmit } = form;
 
   const onNext = async () => {
-    let fieldsToValidate: (keyof FormData)[] = []
+    let fieldsToValidate: (keyof FormData)[] = [];
     if (step === 1) {
-      fieldsToValidate = ["firstName", "lastName", "email", "phone", "password"]
+      fieldsToValidate = [
+        "firstName",
+        "lastName",
+        "email",
+        "phone",
+        "password",
+      ];
     } else if (step === 2) {
-      fieldsToValidate = ["businessName", "address1", "address2", "city", "state", "zip", "businessPhone", "businessEmail", "website"]
+      fieldsToValidate = [
+        "businessName",
+        "address1",
+        "address2",
+        "city",
+        "state",
+        "zip",
+        "businessPhone",
+        "businessEmail",
+        "website",
+      ];
     }
 
-    const isValid = await trigger(fieldsToValidate)
+    const isValid = await trigger(fieldsToValidate);
     if (isValid) {
-      setStep((prev) => prev + 1)
+      setStep((prev) => prev + 1);
     }
-  }
+  };
 
   const onBack = () => {
-    setStep((prev) => prev - 1)
-  }
+    setStep((prev) => prev - 1);
+  };
 
   const onSubmit = async (data: FormData) => {
     if (!logo) {
-      toast.error("Please upload a logo")
-      return
+      toast.error("Please upload a logo");
+      return;
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    
-    console.log("Form Data:", data)
-    console.log("Logo:", logo.name)
-    
-    setIsLoading(false)
-    toast.success("Marketplace registered successfully!")
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    console.log("Form Data:", data);
+    console.log("Logo:", logo.name);
+
+    setIsLoading(false);
+    toast.success("Marketplace registered successfully!");
     // Redirect would happen here
-  }
+  };
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      setLogo(e.target.files[0])
+      setLogo(e.target.files[0]);
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -166,7 +189,11 @@ export function MarketplaceSignupForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input type="email" placeholder="john@example.com" {...field} />
+                    <Input
+                      type="email"
+                      placeholder="john@example.com"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -307,7 +334,11 @@ export function MarketplaceSignupForm() {
                   <FormItem>
                     <FormLabel>Business Email</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="contact@acme.com" {...field} />
+                      <Input
+                        type="email"
+                        placeholder="contact@acme.com"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -328,7 +359,12 @@ export function MarketplaceSignupForm() {
               )}
             />
             <div className="flex gap-4">
-              <Button type="button" variant="outline" onClick={onBack} className="w-full">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onBack}
+                className="w-full"
+              >
                 Back
               </Button>
               <Button type="button" onClick={onNext} className="w-full">
@@ -351,19 +387,28 @@ export function MarketplaceSignupForm() {
                 <div className="space-y-2">
                   <CheckCircle2 className="w-12 h-12 text-primary mx-auto" />
                   <p className="font-medium">{logo.name}</p>
-                  <p className="text-sm text-muted-foreground">Click to replace</p>
+                  <p className="text-sm text-muted-foreground">
+                    Click to replace
+                  </p>
                 </div>
               ) : (
                 <div className="space-y-2">
                   <Upload className="w-12 h-12 text-muted-foreground mx-auto" />
                   <p className="font-medium">Click to upload logo</p>
-                  <p className="text-sm text-muted-foreground">SVG, PNG, JPG or GIF (max. 800x400px)</p>
+                  <p className="text-sm text-muted-foreground">
+                    SVG, PNG, JPG or GIF (max. 800x400px)
+                  </p>
                 </div>
               )}
             </div>
 
-            <div className="flex gap-4">
-              <Button type="button" variant="outline" onClick={onBack} className="w-full">
+            <div className="flex gap-4 flex-col">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onBack}
+                className="w-full"
+              >
                 Back
               </Button>
               <Button type="submit" disabled={isLoading} className="w-full">
@@ -375,5 +420,5 @@ export function MarketplaceSignupForm() {
         )}
       </form>
     </Form>
-  )
+  );
 }
