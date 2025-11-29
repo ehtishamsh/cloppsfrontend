@@ -2,7 +2,7 @@ export interface User {
   id: string
   email: string
   name: string
-  role: "marketplace" | "cosigner"
+  role: "marketplace" | "cosigner" | "bidder"
 }
 
 export const authService = {
@@ -10,7 +10,8 @@ export const authService = {
     // Simulate API delay
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    if (email.toLowerCase().includes("admin")) {
+    // Admin/Marketplace login
+    if (email.toLowerCase().includes("admin") || email === "admin@clopps.com") {
       return {
         id: "user_1",
         email,
@@ -19,10 +20,21 @@ export const authService = {
       }
     }
 
+    // Bidder login
+    if (email.includes("john@example.com") || email.includes("alice.j@example.com") || email.includes("bob.w@example.com")) {
+      return {
+        id: "bidder_" + Math.random().toString(36).substr(2, 9),
+        email,
+        name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1),
+        role: "bidder",
+      }
+    }
+
+    // Cosigner login (default)
     return {
       id: "user_2",
       email,
-      name: "John Doe",
+      name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1),
       role: "cosigner",
     }
   },

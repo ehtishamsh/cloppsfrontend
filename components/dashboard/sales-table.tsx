@@ -32,9 +32,11 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
     bidderNumber: "",
     title: "",
     price: 0,
-    buyerName: "",
-    category: "",
   })
+
+  // Edit state
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editRow, setEditRow] = useState<Partial<SaleEntry>>({})
 
   // Settings (Mock)
   const taxRate = 0.0825
@@ -60,9 +62,7 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
   const totals = useMemo(() => {
     const subtotal = entries.reduce((sum, entry) => sum + (entry.price || 0), 0)
     const commission = subtotal * commissionRate
-    const tax = subtotal * taxRate
-    const total = subtotal + commission + tax
-    return { subtotal, commission, tax, total }
+    return { subtotal, commission }
   }, [entries])
 
   const handleAddRow = async () => {
@@ -77,12 +77,10 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
         bidderNumber: newRow.bidderNumber,
         title: newRow.title || "",
         price: Number(newRow.price),
-        buyerName: newRow.buyerName,
-        category: newRow.category,
       })
       
       setEntries([...entries, sale])
-      setNewRow({ lotNumber: "", bidderNumber: "", title: "", price: 0, buyerName: "", category: "" })
+      setNewRow({ lotNumber: "", bidderNumber: "", title: "", price: 0 })
       toast.success("Sale added")
     } catch (error) {
       toast.error("Failed to add sale")
@@ -96,6 +94,36 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
       toast.success("Sale removed")
     } catch (error) {
       toast.error("Failed to remove sale")
+    }
+  }
+
+  const startEdit = (entry: SaleEntry) => {
+    setEditingId(entry.id)
+    setEditRow(entry)
+  }
+
+  const cancelEdit = () => {
+    setEditingId(null)
+    setEditRow({})
+  }
+
+  const saveEdit = async () => {
+    if (!editingId || !editRow.lotNumber || !editRow.bidderNumber || !editRow.price) {
+      toast.error("Please fill in all required fields")
+      return
+    }
+
+    try {
+      // Mock update call
+      const updatedEntry = { ...editRow, id: editingId } as SaleEntry
+      // await eventService.updateSale("EVT-001", editingId, updatedEntry)
+      
+      setEntries(entries.map(e => e.id === editingId ? updatedEntry : e))
+      setEditingId(null)
+      setEditRow({})
+      toast.success("Sale updated")
+    } catch (error) {
+      toast.error("Failed to update sale")
     }
   }
 
@@ -119,7 +147,7 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
@@ -141,27 +169,6 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
             </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tax</CardTitle>
-            <Calculator className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${totals.tax.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              {(taxRate * 100).toFixed(2)}% Sales Tax
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Grand Total</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold text-primary">${totals.total.toLocaleString()}</div>
-          </CardContent>
-        </Card>
       </div>
 
       <div className="rounded-md border">
@@ -170,49 +177,83 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[80px]">Lot #</TableHead>
-                <TableHead className="w-[60px]"></TableHead>
                 <TableHead className="w-[80px]">Bidder #</TableHead>
-                <TableHead className="w-[150px]">Buyer Name</TableHead>
                 <TableHead>Item Title</TableHead>
-                <TableHead className="w-[120px]">Category</TableHead>
                 <TableHead className="w-[120px] text-right">Price</TableHead>
-                <TableHead className="w-[50px]"></TableHead>
+                <TableHead className="w-[100px] text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {entries.map((entry) => (
                 <TableRow key={entry.id}>
-                  <TableCell className="font-medium">{entry.lotNumber}</TableCell>
-                  <TableCell>
-                    {entry.imageUrl ? (
-                      <div className="h-10 w-10 rounded-md overflow-hidden bg-muted">
-                        <img 
-                          src={entry.imageUrl} 
-                          alt={entry.title}
-                          className="h-full w-full object-cover"
+                  {editingId === entry.id ? (
+                    <>
+                      <TableCell>
+                        <Input 
+                          value={editRow.lotNumber} 
+                          onChange={(e) => setEditRow({...editRow, lotNumber: e.target.value})}
+                          className="h-8 w-full"
                         />
-                      </div>
-                    ) : (
-                      <div className="h-10 w-10 rounded-md bg-muted flex items-center justify-center text-xs text-muted-foreground">
-                        No Img
-                      </div>
-                    )}
-                  </TableCell>
-                  <TableCell>{entry.bidderNumber}</TableCell>
-                  <TableCell>{entry.buyerName || "-"}</TableCell>
-                  <TableCell>{entry.title}</TableCell>
-                  <TableCell>{entry.category || "-"}</TableCell>
-                  <TableCell className="text-right">${entry.price.toLocaleString()}</TableCell>
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDeleteRow(entry.id)}
-                      className="h-8 w-8 text-destructive hover:text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
+                      </TableCell>
+                      <TableCell>
+                        <Input 
+                          value={editRow.bidderNumber} 
+                          onChange={(e) => setEditRow({...editRow, bidderNumber: e.target.value})}
+                          className="h-8 w-full"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input 
+                          value={editRow.title} 
+                          onChange={(e) => setEditRow({...editRow, title: e.target.value})}
+                          className="h-8 w-full"
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Input 
+                          type="number"
+                          value={editRow.price} 
+                          onChange={(e) => setEditRow({...editRow, price: Number(e.target.value)})}
+                          className="h-8 w-full text-right"
+                        />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex justify-end gap-2">
+                          <Button size="icon" variant="ghost" onClick={saveEdit} className="h-8 w-8 text-green-600">
+                            <Save className="h-4 w-4" />
+                          </Button>
+                          <Button size="icon" variant="ghost" onClick={cancelEdit} className="h-8 w-8">
+                            <Trash2 className="h-4 w-4 rotate-45" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </>
+                  ) : (
+                    <>
+                      <TableCell className="font-medium">{entry.lotNumber}</TableCell>
+                      <TableCell>{entry.bidderNumber}</TableCell>
+                      <TableCell>{entry.title}</TableCell>
+                      <TableCell className="text-right">${entry.price.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => startEdit(entry)}
+                          className="mr-2"
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => handleDeleteRow(entry.id)}
+                          className="h-8 w-8 text-destructive hover:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </TableCell>
+                    </>
+                  )}
                 </TableRow>
               ))}
               
@@ -226,7 +267,6 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
                     className="h-8"
                   />
                 </TableCell>
-                <TableCell></TableCell>
                 <TableCell>
                   <Input
                     placeholder="Bidder #"
@@ -237,25 +277,9 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
                 </TableCell>
                 <TableCell>
                   <Input
-                    placeholder="Buyer Name"
-                    value={newRow.buyerName || ""}
-                    onChange={(e) => setNewRow({ ...newRow, buyerName: e.target.value })}
-                    className="h-8"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Input
                     placeholder="Item Title"
                     value={newRow.title}
                     onChange={(e) => setNewRow({ ...newRow, title: e.target.value })}
-                    className="h-8"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Input
-                    placeholder="Category"
-                    value={newRow.category || ""}
-                    onChange={(e) => setNewRow({ ...newRow, category: e.target.value })}
                     className="h-8"
                   />
                 </TableCell>

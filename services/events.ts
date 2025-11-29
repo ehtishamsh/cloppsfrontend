@@ -5,6 +5,7 @@ export interface Event {
   name: string
   startDate: string
   endDate: string
+  time?: string
   location: string
   status: "Draft" | "Scheduled" | "Live" | "Ended" | "Closed"
   description?: string
@@ -25,57 +26,62 @@ export interface SaleEntry {
 
 const MOCK_EVENTS: Event[] = [
   {
-    id: "EVT-001",
+    id: "ENR-001",
     name: "Spring Classic Car Auction",
     startDate: "2024-04-15",
-    endDate: "2024-04-17",
+    endDate: "2024-04-15",
+    time: "10:00 AM",
     location: "Main Hall A",
     status: "Live",
-    description: "Annual spring auction featuring vintage and classic automobiles.",
+    description: "Annual classic car auction featuring vintage automobiles",
     itemsCount: 45,
     totalSales: 125000,
   },
   {
-    id: "EVT-002",
+    id: "ENR-002",
     name: "Estate Jewelry Collection",
     startDate: "2024-05-20",
-    endDate: "2024-05-21",
+    endDate: "2024-05-20",
+    time: "2:00 PM",
     location: "Gallery B",
     status: "Scheduled",
-    description: "Exclusive collection of estate jewelry and fine watches.",
+    description: "Rare and antique jewelry pieces from private estates",
     itemsCount: 120,
     totalSales: 0,
   },
   {
-    id: "EVT-003",
+    id: "ENR-003",
     name: "Modern Art Showcase",
     startDate: "2024-06-10",
-    endDate: "2024-06-12",
-    location: "Downtown Center",
+    endDate: "2024-06-10",
+    time: "6:00 PM",
+    location: "City Art Center",
     status: "Draft",
-    description: "Contemporary art pieces from emerging artists.",
+    description: "Contemporary art from emerging artists",
     itemsCount: 0,
     totalSales: 0,
   },
   {
-    id: "EVT-004",
+    id: "ENR-004",
     name: "Rare Coins & Stamps",
     startDate: "2024-07-05",
-    endDate: "2024-07-06",
-    location: "Suite 404",
+    endDate: "2024-07-05",
+    time: "11:00 AM",
+    location: "Conference Room C",
     status: "Scheduled",
-    description: "A curated selection of rare numismatic and philatelic items.",
+    description: "Numismatic treasures and philatelic rarities",
     itemsCount: 200,
     totalSales: 0,
   },
   {
-    id: "EVT-005",
+    id: "ENR-005",
     name: "Vintage Tech & Gaming",
     startDate: "2024-08-15",
-    endDate: "2024-08-16",
-    location: "Online",
+    endDate: "2024-08-15",
+    time: "3:00 PM",
+    location: "Tech Hub",
     status: "Draft",
-    description: "Retro computers, consoles, and arcade cabinets.",
+    description: "Retro gaming consoles and vintage technology",
     itemsCount: 15,
     totalSales: 0,
   },
@@ -167,16 +173,15 @@ export const eventService = {
 
   async getEventDetails(id: string) {
     await delay(500)
-    // For now, return a merged object or specific mock data
     const event = MOCK_EVENTS.find((e) => e.id === id)
     if (!event) return null
     
     return {
       ...event,
       stats: {
-        totalItems: event.itemsCount,
-        totalSales: event.totalSales,
-        cosigners: 12, // Mock
+        totalItems: event.itemsCount || 0,
+        totalSales: event.totalSales || 0,
+        cosigners: 12,
       }
     }
   },
@@ -230,6 +235,15 @@ export const eventService = {
     const newSale = { ...sale, id: Math.random().toString(36).substr(2, 9) }
     MOCK_SALES.push(newSale)
     return newSale
+  },
+
+  async getEventBidders(eventId: string) {
+    await delay(500)
+    return [
+      { id: "1", paddleNumber: "101", name: "John Smith", email: "john@example.com", phone: "555-0101", status: "approved" },
+      { id: "2", paddleNumber: "102", name: "Alice Johnson", email: "alice@example.com", phone: "555-0102", status: "approved" },
+      { id: "3", paddleNumber: "103", name: "Bob Wilson", email: "bob@example.com", phone: "555-0103", status: "pending" },
+    ]
   },
 
   async deleteSale(eventId: string, saleId: string): Promise<void> {

@@ -43,6 +43,9 @@ export function LoginForm() {
       if (user.role === "marketplace") {
         toast.success("Welcome to Marketplace Dashboard!")
         router.push("/marketplace/events")
+      } else if (user.role === "bidder") {
+        toast.success("Welcome to Bidder Dashboard!")
+        router.push("/bidder")
       } else {
         toast.success("Welcome to Cosigner Dashboard!")
         router.push("/cosigner")
@@ -54,13 +57,16 @@ export function LoginForm() {
     }
   }
 
-  const handleMockLogin = (type: "marketplace" | "cosigner") => {
+  const handleMockLogin = (type: "marketplace" | "cosigner" | "bidder") => {
     if (type === "marketplace") {
-      form.setValue("email", "admin@marketplace.com")
-      form.setValue("password", "password123")
+      form.setValue("email", "admin@clopps.com")
+      form.setValue("password", "admin123")
+    } else if (type === "bidder") {
+      form.setValue("email", "john@example.com")
+      form.setValue("password", "bidder123")
     } else {
-      form.setValue("email", "john@cosigner.com")
-      form.setValue("password", "password123")
+      form.setValue("email", "jane@example.com")
+      form.setValue("password", "cosigner123")
     }
   }
 
@@ -70,22 +76,22 @@ export function LoginForm() {
         <AlertTitle>Mock Login Credentials</AlertTitle>
         <AlertDescription className="space-y-2">
           <div className="mt-2 space-y-1">
-            <p className="font-medium">Marketplace:</p>
-            <p className="text-sm">Email: <code className="bg-muted px-1 rounded">admin@marketplace.com</code></p>
-            <p className="text-sm">Password: <code className="bg-muted px-1 rounded">password123</code></p>
+            <p className="font-medium">Marketplace Admin:</p>
+            <p className="text-sm">Email: <code className="bg-muted px-1 rounded">admin@clopps.com</code></p>
+            <p className="text-sm">Password: <code className="bg-muted px-1 rounded">admin123</code></p>
             <Button 
               variant="outline" 
               size="sm" 
               onClick={() => handleMockLogin("marketplace")}
               className="mt-1"
             >
-              Fill Marketplace Credentials
+              Fill Admin Credentials
             </Button>
           </div>
           <div className="mt-3 space-y-1">
             <p className="font-medium">Cosigner:</p>
-            <p className="text-sm">Email: <code className="bg-muted px-1 rounded">john@cosigner.com</code></p>
-            <p className="text-sm">Password: <code className="bg-muted px-1 rounded">password123</code></p>
+            <p className="text-sm">Email: <code className="bg-muted px-1 rounded">jane@example.com</code></p>
+            <p className="text-sm">Password: <code className="bg-muted px-1 rounded">cosigner123</code></p>
             <Button 
               variant="outline" 
               size="sm" 
@@ -93,6 +99,19 @@ export function LoginForm() {
               className="mt-1"
             >
               Fill Cosigner Credentials
+            </Button>
+          </div>
+          <div className="mt-3 space-y-1">
+            <p className="font-medium">Bidder:</p>
+            <p className="text-sm">Email: <code className="bg-muted px-1 rounded">john@example.com</code></p>
+            <p className="text-sm">Password: <code className="bg-muted px-1 rounded">bidder123</code></p>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => handleMockLogin("bidder")}
+              className="mt-1"
+            >
+              Fill Bidder Credentials
             </Button>
           </div>
         </AlertDescription>

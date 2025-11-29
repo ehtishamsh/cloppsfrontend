@@ -3,11 +3,13 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Calendar, MapPin, Users, DollarSign, FileText, ArrowLeft, PlayCircle, PauseCircle, StopCircle } from "lucide-react"
 import Link from "next/link"
 import { SalesTable } from "@/components/dashboard/sales-table"
 import { CosignerManagement } from "@/components/dashboard/cosigner-management"
 import { EventReports } from "@/components/dashboard/event-reports"
+import { EventBidders } from "@/components/dashboard/event-bidders"
 import { Separator } from "@/components/ui/separator"
 import { eventService } from "@/services/events"
 import { LoadingSkeleton } from "@/components/shared/loading"
@@ -65,12 +67,14 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
           <div className="flex items-center gap-4 text-muted-foreground">
             <div className="flex items-center gap-1">
               <Calendar className="h-4 w-4" />
-              <span>{event.startDate} - {event.endDate}</span>
+              <span>{event.startDate}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <MapPin className="h-4 w-4" />
-              <span>{event.location}</span>
-            </div>
+            {event.time && (
+              <div className="flex items-center gap-1">
+                <span>•</span>
+                <span>{event.time}</span>
+              </div>
+            )}
           </div>
         </div>
 
@@ -105,10 +109,19 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
             <DollarSign className="h-4 w-4" />
             Sales Entry
           </TabsTrigger>
+
+          <TabsTrigger value="summary" className="flex items-center gap-2">
+            <FileText className="h-4 w-4" />
+            Summary
+          </TabsTrigger>
           
           <TabsTrigger value="cosigners" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
             Cosigners
+          </TabsTrigger>
+          <TabsTrigger value="buyers" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            Buyers
           </TabsTrigger>
           <TabsTrigger value="reports" className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
@@ -135,8 +148,40 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
           />
         </TabsContent>
 
+        <TabsContent value="summary">
+          <Card>
+            <CardHeader>
+              <CardTitle>Event Financial Summary</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="rounded-lg border p-4">
+                  <div className="text-sm font-medium text-muted-foreground">Total Sales</div>
+                  <div className="text-2xl font-bold">$45,000.00</div>
+                </div>
+                <div className="rounded-lg border p-4">
+                  <div className="text-sm font-medium text-muted-foreground">Commission</div>
+                  <div className="text-2xl font-bold text-red-600">-$4,500.00</div>
+                </div>
+                <div className="rounded-lg border p-4">
+                  <div className="text-sm font-medium text-muted-foreground">Tax</div>
+                  <div className="text-2xl font-bold text-red-600">-$3,712.50</div>
+                </div>
+                <div className="rounded-lg border p-4 bg-green-50">
+                  <div className="text-sm font-medium text-muted-foreground">Grand Total</div>
+                  <div className="text-2xl font-bold text-green-600">$36,787.50</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
         <TabsContent value="cosigners">
-          <CosignerManagement />
+          <CosignerManagement eventId={eventId} />
+        </TabsContent>
+
+        <TabsContent value="buyers">
+          <EventBidders eventId={eventId} />
         </TabsContent>
 
         <TabsContent value="reports">

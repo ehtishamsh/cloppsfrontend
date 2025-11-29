@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Download } from "lucide-react"
+import { Download, Mail, Printer } from "lucide-react"
 import { cosignerService, type Invoice } from "@/services/cosigner"
 import { LoadingSkeleton } from "@/components/shared/loading"
 import { EmptyState } from "@/components/shared/empty-state"
@@ -83,20 +83,37 @@ export function CosignerInvoices() {
                 </Badge>
               </TableCell>
               <TableCell className="text-right">
-                <Button 
-                  variant="ghost" 
-                  size="sm"
-                  onClick={() => {
-                    toast.success(`Downloading Invoice #${invoice.id}...`)
-                    // Mock download delay
-                    setTimeout(() => {
-                      toast.success(`Invoice #${invoice.id} downloaded successfully`)
-                    }, 1500)
-                  }}
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  Download
-                </Button>
+                <div className="flex justify-end gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => toast.success(`Emailing Invoice #${invoice.id}...`)}
+                    title="Email Invoice"
+                  >
+                    <Mail className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => toast.success(`Printing Invoice #${invoice.id}...`)}
+                    title="Print Invoice"
+                  >
+                    <Printer className="h-4 w-4" />
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => {
+                      toast.success(`Downloading Invoice #${invoice.id}...`)
+                      setTimeout(() => {
+                        toast.success(`Invoice #${invoice.id} downloaded successfully`)
+                      }, 1500)
+                    }}
+                    title="Download PDF"
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                </div>
               </TableCell>
             </TableRow>
           ))}

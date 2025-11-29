@@ -1,21 +1,14 @@
-"use client";
+"use client"
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { toast } from "sonner";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { useState } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
+import { toast } from "sonner"
+import { Loader2, CheckCircle2 } from "lucide-react"
 
 const basicInfoSchema = z.object({
   firstName: z.string().min(2, "First name is required"),
@@ -24,7 +17,7 @@ const basicInfoSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Phone number is required"),
   password: z.string().min(8, "Password must be at least 8 characters"),
-});
+})
 
 const addressInfoSchema = z.object({
   address1: z.string().min(5, "Address is required"),
@@ -32,15 +25,15 @@ const addressInfoSchema = z.object({
   city: z.string().min(2, "City is required"),
   state: z.string().min(2, "State is required"),
   zip: z.string().min(5, "Zip code is required"),
-});
+})
 
-const formSchema = basicInfoSchema.merge(addressInfoSchema);
+const formSchema = basicInfoSchema.merge(addressInfoSchema)
 
-type FormData = z.infer<typeof formSchema>;
+type FormData = z.infer<typeof formSchema>
 
 export function CosignerSignupForm() {
-  const [step, setStep] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState(1)
+  const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -58,44 +51,37 @@ export function CosignerSignupForm() {
       zip: "",
     },
     mode: "onChange",
-  });
+  })
 
-  const { trigger, handleSubmit } = form;
+  const { trigger, handleSubmit } = form
 
   const onNext = async () => {
-    let fieldsToValidate: (keyof FormData)[] = [];
+    let fieldsToValidate: (keyof FormData)[] = []
     if (step === 1) {
-      fieldsToValidate = [
-        "firstName",
-        "lastName",
-        "dealerNickname",
-        "email",
-        "phone",
-        "password",
-      ];
+      fieldsToValidate = ["firstName", "lastName", "dealerNickname", "email", "phone", "password"]
     }
 
-    const isValid = await trigger(fieldsToValidate);
+    const isValid = await trigger(fieldsToValidate)
     if (isValid) {
-      setStep((prev) => prev + 1);
+      setStep((prev) => prev + 1)
     }
-  };
+  }
 
   const onBack = () => {
-    setStep((prev) => prev - 1);
-  };
+    setStep((prev) => prev - 1)
+  }
 
   const onSubmit = async (data: FormData) => {
-    setIsLoading(true);
+    setIsLoading(true)
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    console.log("Cosigner Form Data:", data);
-
-    setIsLoading(false);
-    toast.success("Cosigner registered successfully!");
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    
+    console.log("Cosigner Form Data:", data)
+    
+    setIsLoading(false)
+    toast.success("Cosigner registered successfully!")
     // Redirect would happen here
-  };
+  }
 
   return (
     <Form {...form}>
@@ -170,11 +156,7 @@ export function CosignerSignupForm() {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="jane@example.com"
-                      {...field}
-                    />
+                    <Input type="email" placeholder="jane@example.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -281,13 +263,8 @@ export function CosignerSignupForm() {
                 )}
               />
             </div>
-            <div className="flex gap-4 flex-col">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onBack}
-                className="w-full"
-              >
+            <div className="flex gap-4">
+              <Button type="button" variant="outline" onClick={onBack} className="w-full">
                 Back
               </Button>
               <Button type="submit" disabled={isLoading} className="w-full">
@@ -299,5 +276,5 @@ export function CosignerSignupForm() {
         )}
       </form>
     </Form>
-  );
+  )
 }

@@ -12,6 +12,7 @@ import { toast } from "sonner"
 import { Loader2, CalendarIcon } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { cn } from "@/lib/utils"
 import { format } from "date-fns"
 import Link from "next/link"
@@ -23,21 +24,14 @@ const eventSchema = z.object({
   startDate: z.date({
     error: (issue) =>
       issue.input === undefined
-        ? "Start date is required"
-        : "Invalid date", // or more nuanced logic
-  }),
-  endDate: z.date({
-    error: (issue) =>
-      issue.input === undefined
-        ? "End date is required"
+        ? "Event date is required"
         : "Invalid date",
   }),
-  location: z.string().min(5, "Location is required"),
+  time: z.string().min(1, "Time is required"),
+  location: z.string().optional(),
+  status: z.enum(["Draft", "Scheduled", "Live", "Ended", "Closed"]),
   description: z.string().optional(),
-}).refine((data) => data.endDate >= data.startDate, {
-  message: "End date must be after or equal to start date",
-  path: ["endDate"],
-});
+})
 
 type FormData = z.infer<typeof eventSchema>
 
@@ -55,8 +49,9 @@ export function EventForm({ event, mode }: EventFormProps) {
     defaultValues: {
       name: event?.name || "",
       startDate: event?.startDate ? new Date(event.startDate) : undefined,
-      endDate: event?.endDate ? new Date(event.endDate) : undefined,
-      location: event?.location || "",
+      time: event?.startDate ? format(new Date(event.startDate), "HH:mm") : "09:00",
+      location: event?.location || "TBD",
+      status: (event?.status as any) || "Draft",
       description: event?.description || "",
     },
   })
@@ -65,11 +60,21 @@ export function EventForm({ event, mode }: EventFormProps) {
     setIsLoading(true)
     
     try {
+      // Combine Date and Time
+      const dateTime = new Date(data.startDate)
+      const [hours, minutes] = data.time.split(":").map(Number)
+      dateTime.setHours(hours, minutes)
+
+      // Default End Date to 4 hours later
+      const endDateTime = new Date(dateTime)
+      endDateTime.setHours(endDateTime.getHours() + 4)
+
       const eventData = {
         name: data.name,
-        startDate: format(data.startDate, "yyyy-MM-dd"),
-        endDate: format(data.endDate, "yyyy-MM-dd"),
-        location: data.location,
+        startDate: dateTime.toISOString(),
+        endDate: endDateTime.toISOString(),
+        location: data.location || "TBD",
+        status: data.status,
         description: data.description,
       }
 
@@ -112,7 +117,7 @@ export function EventForm({ event, mode }: EventFormProps) {
             name="startDate"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Start Date</FormLabel>
+                <FormLabel>Event Date</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -126,7 +131,7 @@ export function EventForm({ event, mode }: EventFormProps) {
                         {field.value ? (
                           format(field.value, "PPP")
                         ) : (
-                          <span>Pick start date</span>
+                          <span>Pick date</span>
                         )}
                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                       </Button>
@@ -151,41 +156,13 @@ export function EventForm({ event, mode }: EventFormProps) {
 
           <FormField
             control={form.control}
-            name="endDate"
+            name="time"
             render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>End Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick end date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date < new Date(new Date().setHours(0, 0, 0, 0))
-                      }
-                      autoFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+              <FormItem>
+                <FormLabel>Time</FormLabel>
+                <FormControl>
+                  <Input type="time" {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
@@ -193,6 +170,32 @@ export function EventForm({ event, mode }: EventFormProps) {
         </div>
 
         <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Event Status</FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="Draft">Draft</SelectItem>
+                  <SelectItem value="Scheduled">Scheduled</SelectItem>
+                  <SelectItem value="Live">Live</SelectItem>
+                  <SelectItem value="Ended">Ended</SelectItem>
+                  <SelectItem value="Closed">Closed</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        {/* Location Hidden */}
+        {/* <FormField
           control={form.control}
           name="location"
           render={({ field }) => (
@@ -204,7 +207,7 @@ export function EventForm({ event, mode }: EventFormProps) {
               <FormMessage />
             </FormItem>
           )}
-        />
+        /> */}
 
         <FormField
           control={form.control}

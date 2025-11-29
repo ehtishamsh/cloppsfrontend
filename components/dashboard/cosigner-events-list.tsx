@@ -85,7 +85,7 @@ export function CosignerEventsList({ type = "available" }: { type?: "available" 
           <TableRow>
             <TableHead>Event Name</TableHead>
             <TableHead>Date</TableHead>
-            <TableHead>Location</TableHead>
+            <TableHead>Time</TableHead>
             <TableHead>Status</TableHead>
             {type === "enrolled" && <TableHead>Items</TableHead>}
             {type === "enrolled" && <TableHead>Sales</TableHead>}
@@ -97,7 +97,7 @@ export function CosignerEventsList({ type = "available" }: { type?: "available" 
             <TableRow key={event.id}>
               <TableCell className="font-medium">{event.name}</TableCell>
               <TableCell>{event.date}</TableCell>
-              <TableCell>{event.location}</TableCell>
+              <TableCell>{event.time || 'TBD'}</TableCell>
               <TableCell>
                 <Badge variant="secondary">{event.status}</Badge>
               </TableCell>

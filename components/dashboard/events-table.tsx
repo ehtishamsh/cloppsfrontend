@@ -104,8 +104,8 @@ export function EventsTable() {
                 <TableHeader>
                   <TableRow>
                     <TableHead>Event Name</TableHead>
-                    <TableHead>Date Range</TableHead>
-                    <TableHead>Location</TableHead>
+                    <TableHead>Event Date</TableHead>
+                    <TableHead>Time</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -120,9 +120,10 @@ export function EventsTable() {
                       </TableCell>
                       <TableCell>
                         {event.startDate}
-                        {event.endDate !== event.startDate && ` - ${event.endDate}`}
                       </TableCell>
-                      <TableCell>{event.location}</TableCell>
+                      <TableCell>
+                        {event.time || 'N/A'}
+                      </TableCell>
                       <TableCell>
                         <Badge
                           variant={

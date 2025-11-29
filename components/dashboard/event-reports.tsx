@@ -173,6 +173,19 @@ export function EventReports({ eventId }: EventReportsProps) {
             </p>
           </CardContent>
         </Card>
+
+        <Card className="bg-primary text-primary-foreground">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium text-primary-foreground">Grand Total</CardTitle>
+            <DollarSign className="h-4 w-4 text-primary-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.grandTotal}</div>
+            <p className="text-xs text-primary-foreground/80">
+              Total collected
+            </p>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Sales by Category */}

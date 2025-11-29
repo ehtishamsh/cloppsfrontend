@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Store, Users } from "lucide-react"
+import { Store, Users, Gavel } from "lucide-react"
 
 export default function SignupPage() {
   return (
@@ -42,6 +42,22 @@ export default function SignupPage() {
                 <CardTitle className="text-base">Cosigner</CardTitle>
                 <CardDescription>
                   I want to consign items to marketplaces
+                </CardDescription>
+              </div>
+            </CardHeader>
+          </Card>
+        </Link>
+
+        <Link href="/signup/bidder">
+          <Card className="hover:border-primary hover:bg-primary/5 transition-all cursor-pointer group">
+            <CardHeader className="flex flex-row items-center gap-4 pb-2">
+              <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground transition-colors flex items-center justify-center text-primary">
+                <Gavel className="h-6 w-6" />
+              </div>
+              <div className="space-y-1">
+                <CardTitle className="text-base">Bidder</CardTitle>
+                <CardDescription>
+                  I want to bid on items in auctions
                 </CardDescription>
               </div>
             </CardHeader>

@@ -148,6 +148,7 @@ export const reportsService = {
       totalTax: "$10,349.63",
       totalCommission: "$12,545.00",
       totalPayout: "$102,555.37",
+      grandTotal: "$148,344.63",
     }
   },
 
