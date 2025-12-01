@@ -171,7 +171,7 @@ export default function BidderDashboardPage() {
                       <TableCell>{purchase.eventName}</TableCell>
                       <TableCell>{purchase.lotNumber}</TableCell>
                       <TableCell className="font-medium">{purchase.itemTitle}</TableCell>
-                      <TableCell className="text-right">${purchase.price.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">${purchase.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                       <TableCell>{purchase.date}</TableCell>
                     </TableRow>
                   ))}
@@ -207,7 +207,7 @@ export default function BidderDashboardPage() {
                       <TableCell className="font-medium">{statement.id}</TableCell>
                       <TableCell>{statement.eventName}</TableCell>
                       <TableCell>{statement.date}</TableCell>
-                      <TableCell className="text-right">${statement.totalAmount.toLocaleString()}</TableCell>
+                      <TableCell className="text-right">${statement.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                       <TableCell>
                         <Badge variant={statement.status === 'paid' ? 'default' : 'destructive'}>
                           {statement.status}

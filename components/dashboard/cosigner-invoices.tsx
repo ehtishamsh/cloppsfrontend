@@ -73,10 +73,10 @@ export function CosignerInvoices() {
               <TableCell>{invoice.eventName}</TableCell>
               <TableCell>{invoice.date}</TableCell>
               <TableCell className="text-right">{invoice.lotsSold}</TableCell>
-              <TableCell className="text-right">${invoice.salePrice.toLocaleString()}</TableCell>
-              <TableCell className="text-right text-red-600">-${invoice.commission.toLocaleString()}</TableCell>
-              <TableCell className="text-right text-red-600">-${invoice.salesTax.toLocaleString()}</TableCell>
-              <TableCell className="text-right font-bold">${invoice.totalDue.toLocaleString()}</TableCell>
+              <TableCell className="text-right">${invoice.salePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+              <TableCell className="text-right text-red-600">-${invoice.commission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+              <TableCell className="text-right text-red-600">-${invoice.salesTax.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+              <TableCell className="text-right font-bold">${invoice.totalDue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
               <TableCell>
                 <Badge variant={invoice.status === "Paid" ? "default" : "secondary"}>
                   {invoice.status}

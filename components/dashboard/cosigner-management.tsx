@@ -108,24 +108,31 @@ export function CosignerManagement({ eventId }: CosignerManagementProps) {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead>Cosigner ID</TableHead>
               <TableHead>Name</TableHead>
-              <TableHead>Nickname</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Items</TableHead>
+              <TableHead className="text-right">Items Sold</TableHead>
               <TableHead className="text-center">Invoice</TableHead>
-              <TableHead className="text-center">View</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-center">View Sales</TableHead>
+              <TableHead className="text-right">Status & Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {cosigners.map((cosigner) => (
               <TableRow key={cosigner.id}>
-                <TableCell className="font-medium">{cosigner.name}</TableCell>
-                <TableCell>{cosigner.nickname}</TableCell>
+                <TableCell className="font-medium">{cosigner.id}</TableCell>
                 <TableCell>
-                  <Badge variant={cosigner.status === 'approved' ? 'default' : 'secondary'}>
-                    {cosigner.status}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    {cosigner.name}
+                    <Button 
+                      size="icon" 
+                      variant="ghost" 
+                      className="h-6 w-6 text-muted-foreground hover:text-primary"
+                      onClick={() => openEdit(cosigner)}
+                      title="Edit"
+                    >
+                      <Pencil className="h-3 w-3" />
+                    </Button>
+                  </div>
                 </TableCell>
                 <TableCell className="text-right">{cosigner.items}</TableCell>
                 <TableCell className="text-center">
@@ -141,29 +148,23 @@ export function CosignerManagement({ eventId }: CosignerManagementProps) {
                   )}
                 </TableCell>
                 <TableCell className="text-center">
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        asChild
-                        title="View Details"
-                      >
-                        <a href={`/marketplace/events/${eventId}/cosigner/${cosigner.id}`}>
-                          <Eye className="h-4 w-4" />
-                        </a>
-                      </Button>
+                   <Button 
+                     variant="ghost" 
+                     size="icon"
+                     asChild
+                     title="View Sales Details"
+                   >
+                     <a href={`/marketplace/events/${eventId}/cosigner/${cosigner.id}`}>
+                       <Eye className="h-4 w-4" />
+                     </a>
+                   </Button>
                 </TableCell>
                 <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
-                    <Button 
-                      size="icon" 
-                      variant="ghost" 
-                      className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-100"
-                      onClick={() => openEdit(cosigner)}
-                      title="Edit"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Button>
-
+                  <div className="flex justify-end items-center gap-2">
+                    <Badge variant={cosigner.status === 'approved' ? 'default' : 'secondary'}>
+                      {cosigner.status}
+                    </Badge>
+                    
                     {cosigner.status !== 'approved' && (
                       <Button 
                         size="icon" 

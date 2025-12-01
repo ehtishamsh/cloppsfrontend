@@ -156,7 +156,7 @@ export default function CosignerDetailsPage({
                       <TableHead className="text-right">Items Sold</TableHead>
                       <TableHead className="text-right">Total Sales</TableHead>
                       <TableHead className="text-right">Commission</TableHead>
-                      <TableHead className="text-right">Tax</TableHead>
+                    
                       <TableHead className="text-right">Net Payout</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -171,10 +171,10 @@ export default function CosignerDetailsPage({
                           </Badge>
                         </TableCell>
                         <TableCell className="text-right">{event.itemsSold}</TableCell>
-                        <TableCell className="text-right">${event.totalSales.toLocaleString()}</TableCell>
-                        <TableCell className="text-right text-red-600">-${event.commission.toLocaleString()}</TableCell>
-                        <TableCell className="text-right text-red-600">-${event.tax.toLocaleString()}</TableCell>
-                        <TableCell className="text-right font-semibold text-green-600">${event.netPayout.toLocaleString()}</TableCell>
+                        <TableCell className="text-right">${event.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                        <TableCell className="text-right text-red-600">-${event.commission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                      
+                        <TableCell className="text-right font-semibold text-green-600">${event.netPayout.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
@@ -216,7 +216,7 @@ export default function CosignerDetailsPage({
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${totalSales.toLocaleString()}</div>
+                <div className="text-2xl font-bold">${totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                 <p className="text-xs text-muted-foreground">
                   Revenue generated
                 </p>
@@ -229,7 +229,7 @@ export default function CosignerDetailsPage({
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">
-                  ${totalItems > 0 ? Math.round(totalSales / totalItems).toLocaleString() : 0}
+                  ${totalItems > 0 ? Math.round(totalSales / totalItems).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : 0}
                 </div>
                 <p className="text-xs text-muted-foreground">
                   Per item sold
@@ -246,20 +246,18 @@ export default function CosignerDetailsPage({
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="rounded-lg border p-3">
                   <div className="text-sm font-medium text-muted-foreground">Total Sales</div>
-                  <div className="text-2xl font-bold">${totalSales.toLocaleString()}</div>
+                  <div className="text-2xl font-bold">${totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                 </div>
                 <div className="rounded-lg border p-3">
                   <div className="text-sm font-medium text-muted-foreground">Commission</div>
-                  <div className="text-2xl font-bold text-red-600">-${totalCommission.toLocaleString()}</div>
+                  <div className="text-2xl font-bold text-red-600">-${totalCommission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                 </div>
-                <div className="rounded-lg border p-3">
-                  <div className="text-sm font-medium text-muted-foreground">Tax</div>
-                  <div className="text-2xl font-bold text-red-600">-${(events.reduce((acc, e) => acc + (e.tax || 0), 0)).toLocaleString()}</div>
-                </div>
+                
+               
                 <div className="rounded-lg border p-3 bg-green-50">
                   <div className="text-sm font-medium text-muted-foreground">Net Payout</div>
                   <div className="text-2xl font-bold text-green-600">
-                    ${(events.reduce((acc, e) => acc + (e.netPayout || 0), 0)).toLocaleString()}
+                    ${(events.reduce((acc, e) => acc + (e.netPayout || 0), 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </div>
                 </div>
               </div>

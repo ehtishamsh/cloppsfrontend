@@ -155,21 +155,21 @@ export const reportsService = {
   getSalesByCategory: async (eventId: string) => {
     await delay(500)
     return [
-      { category: "Automobiles", count: 15, revenue: "$78,500" },
-      { category: "Jewelry", count: 12, revenue: "$28,900" },
-      { category: "Art", count: 8, revenue: "$14,200" },
-      { category: "Collectibles", count: 3, revenue: "$3,850" },
+      { category: "Automobiles", count: 15, revenue: "$78,500.00" },
+      { category: "Jewelry", count: 12, revenue: "$28,900.00" },
+      { category: "Art", count: 8, revenue: "$14,200.00" },
+      { category: "Collectibles", count: 3, revenue: "$3,850.00" },
     ]
   },
 
   getTopSales: async (eventId: string) => {
     await delay(500)
     return [
-      { lot: "101", item: "1965 Ford Mustang", price: "$45,000", buyer: "John Smith" },
-      { lot: "115", item: "Diamond Necklace", price: "$18,500", buyer: "Alice Johnson" },
-      { lot: "103", item: "Vintage Rolex", price: "$12,000", buyer: "Robert Wilson" },
-      { lot: "127", item: "Oil Painting", price: "$8,900", buyer: "Sarah Davis" },
-      { lot: "142", item: "Antique Clock", price: "$6,200", buyer: "Mike Brown" },
+      { lot: "101", item: "1965 Ford Mustang", price: "$45,000.00", buyer: "John Smith" },
+      { lot: "115", item: "Diamond Necklace", price: "$18,500.00", buyer: "Alice Johnson" },
+      { lot: "103", item: "Vintage Rolex", price: "$12,000.00", buyer: "Robert Wilson" },
+      { lot: "127", item: "Oil Painting", price: "$8,900.00", buyer: "Sarah Davis" },
+      { lot: "142", item: "Antique Clock", price: "$6,200.00", buyer: "Mike Brown" },
     ]
   },
 }

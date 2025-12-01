@@ -69,7 +69,7 @@ export default function MyBidsPage() {
             <Gavel className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">${totalSpent.toLocaleString()}</div>
+            <div className="text-2xl font-bold">${totalSpent.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
             <p className="text-xs text-muted-foreground">
               Total purchase amount
             </p>
@@ -102,7 +102,7 @@ export default function MyBidsPage() {
                   <TableCell className="font-medium">{purchase.eventName}</TableCell>
                   <TableCell>{purchase.lotNumber}</TableCell>
                   <TableCell>{purchase.itemTitle}</TableCell>
-                  <TableCell className="text-right font-semibold">${purchase.price.toLocaleString()}</TableCell>
+                  <TableCell className="text-right font-semibold">${purchase.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                   <TableCell>{purchase.date}</TableCell>
                   <TableCell>
                     <Badge variant="default">Won</Badge>

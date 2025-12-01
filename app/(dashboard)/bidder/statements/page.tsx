@@ -83,7 +83,7 @@ export default function StatementsPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">${totalDue.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-red-600">${totalDue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
             <p className="text-xs text-muted-foreground">
               Pending payment
             </p>
@@ -95,7 +95,7 @@ export default function StatementsPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">${totalPaid.toLocaleString()}</div>
+            <div className="text-2xl font-bold text-green-600">${totalPaid.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
             <p className="text-xs text-muted-foreground">
               Completed payments
             </p>
@@ -129,7 +129,7 @@ export default function StatementsPage() {
                   <TableCell>{statement.eventName}</TableCell>
                   <TableCell>{statement.date}</TableCell>
                   <TableCell className="text-right font-semibold">
-                    ${statement.totalAmount.toLocaleString()}
+                    ${statement.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                   </TableCell>
                   <TableCell>
                     <Badge variant={statement.status === 'paid' ? 'default' : 'destructive'}>

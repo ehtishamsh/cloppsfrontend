@@ -26,15 +26,6 @@ const settingsSchema = z.object({
   email: z.string().email("Invalid email address"),
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
   website: z.string().url("Invalid URL").optional().or(z.literal("")),
-  commissionRate: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0 && Number(val) <= 100, {
-    message: "Commission rate must be between 0 and 100",
-  }),
-  taxRate: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0 && Number(val) <= 100, {
-    message: "Tax rate must be between 0 and 100",
-  }),
-  buyersPremium: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0 && Number(val) <= 100, {
-    message: "Buyer's premium must be between 0 and 100",
-  }),
   address: z.string().min(5, "Address is required"),
   city: z.string().min(2, "City is required"),
   state: z.string().min(2, "State is required"),
@@ -54,9 +45,6 @@ export function SettingsForm() {
       email: "",
       phone: "",
       website: "",
-      commissionRate: "",
-      taxRate: "",
-      buyersPremium: "",
       address: "",
       city: "",
       state: "",
@@ -76,9 +64,6 @@ export function SettingsForm() {
         email: settings.email,
         phone: settings.phone,
         website: settings.website || "",
-        commissionRate: settings.commissionRate.toString(),
-        taxRate: settings.taxRate.toString(),
-        buyersPremium: settings.buyersPremium.toString(),
         address: settings.address,
         city: settings.city,
         state: settings.state,
@@ -103,9 +88,8 @@ export function SettingsForm() {
       await marketplaceService.updateSettings({
         ...currentSettings,
         ...data,
-        commissionRate: Number(data.commissionRate),
-        taxRate: Number(data.taxRate),
-        buyersPremium: Number(data.buyersPremium),
+        ...currentSettings,
+        ...data,
         logoUrl: logo || undefined,
       })
       toast.success("Settings updated successfully")
@@ -186,62 +170,6 @@ export function SettingsForm() {
                   <FormControl>
                     <Input {...field} />
                   </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-
-        <Separator />
-
-        <div className="space-y-4">
-          <h3 className="text-lg font-medium">Financial Settings</h3>
-          <div className="grid gap-4 md:grid-cols-2">
-            <FormField
-              control={form.control}
-              name="taxRate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Sales Tax Rate (%)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Default sales tax rate for your region.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="commissionRate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Default Commission Rate (%)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    This rate will be applied to new consignments by default.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="buyersPremium"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Buyer&apos;s Premium (%)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormDescription>
-                    Additional fee charged to winning bidders.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

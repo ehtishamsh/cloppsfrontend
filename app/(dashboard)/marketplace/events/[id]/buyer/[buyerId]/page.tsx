@@ -16,23 +16,22 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Save, Loader2, Calendar, DollarSign, FileText, Edit, Plus, Pencil, Mail, Printer } from "lucide-react"
-import { AddCosignerItemDialog } from "@/components/dashboard/add-cosigner-item-dialog"
+import { ArrowLeft, Save, Loader2, DollarSign, Edit, ShoppingBag, Plus, Pencil, Mail, Printer } from "lucide-react"
+import { AddBuyerItemDialog } from "@/components/dashboard/add-buyer-item-dialog"
 import { toast } from "sonner"
-import { cosignerService } from "@/services/cosigner"
 import { eventService } from "@/services/events"
 
-export default function EventCosignerDetailsPage({ 
+export default function EventBuyerDetailsPage({ 
   params 
 }: { 
-  params: Promise<{ id: string, cosignerId: string }>
+  params: Promise<{ id: string, buyerId: string }>
 }) {
-  const { id: eventId, cosignerId } = use(params)
+  const { id: eventId, buyerId } = use(params)
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
-  const [cosigner, setCosigner] = useState<any>(null)
+  const [buyer, setBuyer] = useState<any>(null)
   const [event, setEvent] = useState<any>(null)
-  const [sales, setSales] = useState<any[]>([])
+  const [purchases, setPurchases] = useState<any[]>([])
   const [isSaving, setIsSaving] = useState(false)
   const [isAddItemOpen, setIsAddItemOpen] = useState(false)
   const [editingItem, setEditingItem] = useState<any>(null)
@@ -43,18 +42,17 @@ export default function EventCosignerDetailsPage({
 
   const loadData = async () => {
     try {
-      // Load cosigner details
-      const allCosigners = await cosignerService.getCosigners()
-      const foundCosigner = allCosigners.find(c => c.id === cosignerId)
-      setCosigner(foundCosigner)
+      // Load buyer details
+      const foundBuyer = await eventService.getBuyerDetails(buyerId)
+      setBuyer(foundBuyer)
 
       // Load event details
       const eventDetails = await eventService.getEventDetails(eventId)
       setEvent(eventDetails)
 
-      // Load sales for this cosigner in this event
-      const cosignerSales = await cosignerService.getCosignerSales(cosignerId, eventId)
-      setSales(cosignerSales)
+      // Load purchases for this buyer in this event
+      const buyerPurchases = await eventService.getBuyerPurchases(buyerId, eventId)
+      setPurchases(buyerPurchases)
     } catch (error) {
       toast.error("Failed to load data")
     } finally {
@@ -76,14 +74,14 @@ export default function EventCosignerDetailsPage({
 
   const handleAddItem = (data: any) => {
     if (editingItem) {
-      setSales(sales.map(item => item.id === editingItem.id ? { ...item, ...data } : item))
+      setPurchases(purchases.map(item => item.id === editingItem.id ? { ...item, ...data } : item))
       toast.success("Item updated successfully")
     } else {
       const newItem = {
         id: Math.random().toString(36).substr(2, 9),
         ...data
       }
-      setSales([...sales, newItem])
+      setPurchases([...purchases, newItem])
       toast.success("Item added successfully")
     }
     setEditingItem(null)
@@ -107,13 +105,14 @@ export default function EventCosignerDetailsPage({
     )
   }
 
-  if (!cosigner || !event) {
+  if (!buyer || !event) {
     return <div>Data not found</div>
   }
 
-  const totalSales = sales.reduce((acc, item) => acc + item.price, 0)
-  const totalCommission = sales.reduce((acc, item) => acc + item.commission, 0)
-  const totalPayout = sales.reduce((acc, item) => acc + item.payout, 0)
+  const totalPurchases = purchases.reduce((acc, item) => acc + item.price, 0)
+  const totalPremium = purchases.reduce((acc, item) => acc + item.premium, 0)
+  const totalTax = purchases.reduce((acc, item) => acc + item.tax, 0)
+  const totalDue = purchases.reduce((acc, item) => acc + item.total, 0)
 
   return (
     <div className="space-y-6">
@@ -124,18 +123,18 @@ export default function EventCosignerDetailsPage({
         </Button>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            {cosigner.name}
+            {buyer.name}
           </h1>
           <p className="text-muted-foreground">
             Event: {event.name}
           </p>
         </div>
-        <Badge variant={cosigner.status === 'approved' ? 'default' : 'secondary'} className="ml-auto">
-          {cosigner.status}
+        <Badge variant={buyer.status === 'approved' ? 'default' : 'secondary'} className="ml-auto">
+          {buyer.status}
         </Badge>
       </div>
 
-      <AddCosignerItemDialog 
+      <AddBuyerItemDialog 
         open={isAddItemOpen} 
         onOpenChange={setIsAddItemOpen} 
         onSuccess={handleAddItem}
@@ -145,8 +144,8 @@ export default function EventCosignerDetailsPage({
       <Tabs defaultValue="sales" className="space-y-4">
         <TabsList>
           <TabsTrigger value="sales" className="flex items-center gap-2">
-            <DollarSign className="h-4 w-4" />
-            Sales Details
+            <ShoppingBag className="h-4 w-4" />
+            Purchases
           </TabsTrigger>
           <TabsTrigger value="edit" className="flex items-center gap-2">
             <Edit className="h-4 w-4" />
@@ -155,39 +154,48 @@ export default function EventCosignerDetailsPage({
         </TabsList>
 
         <TabsContent value="sales" className="space-y-4">
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-4">
              <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Sales</CardTitle>
+                <CardTitle className="text-sm font-medium">Total Purchases</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">${totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <div className="text-2xl font-bold">${totalPurchases.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Commission</CardTitle>
+                <CardTitle className="text-sm font-medium">Buyer's Premium</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-red-600">-${totalCommission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <div className="text-2xl font-bold text-muted-foreground">+${totalPremium.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               </CardContent>
             </Card>
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Net Payout</CardTitle>
+                <CardTitle className="text-sm font-medium">Tax</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">${totalPayout.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                <div className="text-2xl font-bold text-muted-foreground">+${totalTax.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Due</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-green-600">${totalDue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
               </CardContent>
             </Card>
           </div>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Items Sold</CardTitle>
+              <CardTitle>Items Purchased</CardTitle>
               <Button size="sm" onClick={openAddItem}>
                 <Plus className="mr-2 h-4 w-4" />
                 Add Item
@@ -200,12 +208,13 @@ export default function EventCosignerDetailsPage({
                     <TableHead>Lot #</TableHead>
                     <TableHead>Description</TableHead>
                     <TableHead className="text-right">Price</TableHead>
-                    <TableHead className="text-right">Commission</TableHead>
-                    <TableHead className="text-right">Payout</TableHead>
+                    <TableHead className="text-right">Premium</TableHead>
+                    <TableHead className="text-right">Tax</TableHead>
+                    <TableHead className="text-right">Total</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {sales.map((item) => (
+                  {purchases.map((item) => (
                     <TableRow key={item.id}>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -223,13 +232,15 @@ export default function EventCosignerDetailsPage({
                       </TableCell>
                       <TableCell>{item.description}</TableCell>
                       <TableCell className="text-right">${item.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell className="text-right text-red-600">-${item.commission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell className="text-right font-bold text-green-600">${item.payout.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right text-muted-foreground">+${item.premium.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right text-muted-foreground">+${item.tax.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                      <TableCell className="text-right font-bold text-green-600">${item.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
               </Table>
             </CardContent>
+
             <div className="p-6 pt-0 flex justify-end gap-2">
               <Button variant="outline">
                 <Mail className="mr-2 h-4 w-4" />
@@ -246,30 +257,30 @@ export default function EventCosignerDetailsPage({
         <TabsContent value="edit">
           <Card>
             <CardHeader>
-              <CardTitle>Edit Cosigner Information</CardTitle>
+              <CardTitle>Edit Buyer Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" defaultValue={cosigner.name.split(' ')[0]} />
+                  <Input id="firstName" defaultValue={buyer.name.split(' ')[0]} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" defaultValue={cosigner.name.split(' ')[1] || ''} />
+                  <Input id="lastName" defaultValue={buyer.name.split(' ')[1] || ''} />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" defaultValue={cosigner.email} />
+                <Input id="email" defaultValue={buyer.email} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
-                <Input id="phone" defaultValue={cosigner.phone} />
+                <Input id="phone" defaultValue={buyer.phone} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="nickname">Business Name / Nickname</Label>
-                <Input id="nickname" defaultValue={cosigner.nickname || ''} />
+                <Label htmlFor="paddleNumber">Paddle Number</Label>
+                <Input id="paddleNumber" defaultValue={buyer.paddleNumber} />
               </div>
               <Button onClick={handleSave} disabled={isSaving}>
                 {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

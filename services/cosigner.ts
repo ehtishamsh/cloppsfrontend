@@ -26,7 +26,7 @@ export interface CosignerSaleItem {
   description: string
   price: number
   commission: number
-  tax: number
+  
   payout: number
   status: "Sold" | "Unsold"
 }
@@ -105,17 +105,17 @@ const MOCK_INVOICES: Invoice[] = [
 const MOCK_COSIGNER_SALES: Record<string, Record<string, CosignerSaleItem[]>> = {
   "1": { // Cosigner ID 1
     "EVT-001": [ // Event ID EVT-001
-      { id: "1", lot: "101", description: "Vintage Vase", price: 500, commission: 50, tax: 40, payout: 410, status: "Sold" },
-      { id: "2", lot: "105", description: "Antique Chair", price: 1200, commission: 120, tax: 96, payout: 984, status: "Sold" },
-      { id: "3", lot: "108", description: "Porcelain Doll", price: 300, commission: 30, tax: 24, payout: 246, status: "Sold" },
+      { id: "1", lot: "101", description: "Vintage Vase", price: 500, commission: 50, payout: 410, status: "Sold" },
+      { id: "2", lot: "105", description: "Antique Chair", price: 1200, commission: 120, payout: 984, status: "Sold" },
+      { id: "3", lot: "108", description: "Porcelain Doll", price: 300, commission: 30, payout: 246, status: "Sold" },
     ],
     "EVT-002": [
-      { id: "4", lot: "201", description: "Gold Necklace", price: 2500, commission: 250, tax: 200, payout: 2050, status: "Sold" },
+      { id: "4", lot: "201", description: "Gold Necklace", price: 2500, commission: 250, payout: 2050, status: "Sold" },
     ]
   },
   "2": {
     "EVT-001": [
-      { id: "5", lot: "110", description: "Oil Painting", price: 800, commission: 80, tax: 64, payout: 656, status: "Sold" },
+      { id: "5", lot: "110", description: "Oil Painting", price: 800, commission: 80, payout: 656, status: "Sold" },
     ]
   }
 }
@@ -144,9 +144,9 @@ export const cosignerService = {
   async getCosigners() {
     await new Promise((resolve) => setTimeout(resolve, 500))
     return [
-      { id: "1", name: "Jane Smith", nickname: "Jane's Autos", email: "jane@example.com", phone: "555-0101", status: "approved", items: 25 },
-      { id: "2", name: "Bob Wilson", nickname: "BW Collectibles", email: "bob@example.com", phone: "555-0102", status: "pending", items: 37 },
-      { id: "3", name: "Alice Brown", nickname: "Alice Antiques", email: "alice@example.com", phone: "555-0103", status: "approved", items: 6 },
+      { id: "COS-101", name: "Jane Smith", nickname: "Jane's Autos", email: "jane@example.com", phone: "555-0101", status: "approved", items: 25 },
+      { id: "COS-102", name: "Bob Wilson", nickname: "BW Collectibles", email: "bob@example.com", phone: "555-0102", status: "pending", items: 37 },
+      { id: "COS-103", name: "Alice Brown", nickname: "Alice Antiques", email: "alice@example.com", phone: "555-0103", status: "approved", items: 6 },
     ]
   },
 
@@ -164,7 +164,7 @@ export const cosignerService = {
           itemsSold: 12,
           totalSales: 45000,
           commission: 4500,
-          tax: 3712.50,
+      
           netPayout: 36787.50,
         },
         {
@@ -175,7 +175,7 @@ export const cosignerService = {
           itemsSold: 8,
           totalSales: 28000,
           commission: 2800,
-          tax: 2310,
+      
           netPayout: 22890,
         },
         {
@@ -186,7 +186,7 @@ export const cosignerService = {
           itemsSold: 5,
           totalSales: 12000,
           commission: 1200,
-          tax: 990,
+        
           netPayout: 9810,
         },
       ],
@@ -199,7 +199,7 @@ export const cosignerService = {
           itemsSold: 15,
           totalSales: 62000,
           commission: 6200,
-          tax: 5115,
+        
           netPayout: 50685,
         },
         {
@@ -210,7 +210,7 @@ export const cosignerService = {
           itemsSold: 22,
           totalSales: 38000,
           commission: 3800,
-          tax: 3135,
+      
           netPayout: 31065,
         },
       ],
@@ -223,7 +223,7 @@ export const cosignerService = {
           itemsSold: 6,
           totalSales: 18500,
           commission: 1850,
-          tax: 1526.25,
+      
           netPayout: 15123.75,
         },
       ],
@@ -241,15 +241,15 @@ export const cosignerService = {
       return Array.from({ length: 5 }).map((_, i) => {
         const price = Math.floor(Math.random() * 1000) + 100
         const commission = Math.floor(price * 0.1)
-        const tax = Math.floor(price * 0.08)
+     
         return {
           id: `mock-${i}`,
           lot: `${100 + i}`,
           description: `Mock Item ${i + 1}`,
           price,
           commission,
-          tax,
-          payout: price - commission - tax,
+       
+          payout: price - commission,
           status: "Sold"
         }
       })

@@ -31,6 +31,15 @@ const eventSchema = z.object({
   location: z.string().optional(),
   status: z.enum(["Draft", "Scheduled", "Live", "Ended", "Closed"]),
   description: z.string().optional(),
+  commissionRate: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0 && Number(val) <= 100, {
+    message: "Rate must be between 0 and 100",
+  }),
+  taxRate: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0 && Number(val) <= 100, {
+    message: "Rate must be between 0 and 100",
+  }),
+  buyersPremium: z.string().refine((val) => !isNaN(Number(val)) && Number(val) >= 0 && Number(val) <= 100, {
+    message: "Rate must be between 0 and 100",
+  }),
 })
 
 type FormData = z.infer<typeof eventSchema>
@@ -53,6 +62,9 @@ export function EventForm({ event, mode }: EventFormProps) {
       location: event?.location || "TBD",
       status: (event?.status as any) || "Draft",
       description: event?.description || "",
+      commissionRate: event?.commissionRate?.toString() || "10",
+      taxRate: event?.taxRate?.toString() || "8",
+      buyersPremium: event?.buyersPremium?.toString() || "15",
     },
   })
 
@@ -76,6 +88,9 @@ export function EventForm({ event, mode }: EventFormProps) {
         location: data.location || "TBD",
         status: data.status,
         description: data.description,
+        commissionRate: Number(data.commissionRate),
+        taxRate: Number(data.taxRate),
+        buyersPremium: Number(data.buyersPremium),
       }
 
       if (mode === "edit" && event) {
@@ -195,19 +210,50 @@ export function EventForm({ event, mode }: EventFormProps) {
         />
 
         {/* Location Hidden */}
-        {/* <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Location</FormLabel>
-              <FormControl>
-                <Input placeholder="Main Showroom" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
+        <div className="space-y-4">
+          <h3 className="text-lg font-medium">Financial Settings</h3>
+          <div className="grid gap-4 md:grid-cols-3">
+            <FormField
+              control={form.control}
+              name="commissionRate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Commission Rate (%)</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="taxRate"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Sales Tax Rate (%)</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="buyersPremium"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Buyer&apos;s Premium (%)</FormLabel>
+                  <FormControl>
+                    <Input type="number" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
 
         <FormField
           control={form.control}

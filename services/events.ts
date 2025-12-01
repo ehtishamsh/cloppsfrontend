@@ -11,6 +11,9 @@ export interface Event {
   description?: string
   itemsCount: number
   totalSales: number
+  commissionRate: number
+  taxRate: number
+  buyersPremium: number
 }
 
 export interface SaleEntry {
@@ -36,6 +39,9 @@ const MOCK_EVENTS: Event[] = [
     description: "Annual classic car auction featuring vintage automobiles",
     itemsCount: 45,
     totalSales: 125000,
+    commissionRate: 10,
+    taxRate: 8,
+    buyersPremium: 15,
   },
   {
     id: "ENR-002",
@@ -48,6 +54,9 @@ const MOCK_EVENTS: Event[] = [
     description: "Rare and antique jewelry pieces from private estates",
     itemsCount: 120,
     totalSales: 0,
+    commissionRate: 12,
+    taxRate: 8,
+    buyersPremium: 10,
   },
   {
     id: "ENR-003",
@@ -60,6 +69,9 @@ const MOCK_EVENTS: Event[] = [
     description: "Contemporary art from emerging artists",
     itemsCount: 0,
     totalSales: 0,
+    commissionRate: 15,
+    taxRate: 8,
+    buyersPremium: 12,
   },
   {
     id: "ENR-004",
@@ -72,6 +84,9 @@ const MOCK_EVENTS: Event[] = [
     description: "Numismatic treasures and philatelic rarities",
     itemsCount: 200,
     totalSales: 0,
+    commissionRate: 8,
+    taxRate: 5,
+    buyersPremium: 10,
   },
   {
     id: "ENR-005",
@@ -84,6 +99,9 @@ const MOCK_EVENTS: Event[] = [
     description: "Retro gaming consoles and vintage technology",
     itemsCount: 15,
     totalSales: 0,
+    commissionRate: 10,
+    taxRate: 8,
+    buyersPremium: 10,
   },
 ]
 
@@ -240,9 +258,9 @@ export const eventService = {
   async getEventBidders(eventId: string) {
     await delay(500)
     return [
-      { id: "1", paddleNumber: "101", name: "John Smith", email: "john@example.com", phone: "555-0101", status: "approved" },
-      { id: "2", paddleNumber: "102", name: "Alice Johnson", email: "alice@example.com", phone: "555-0102", status: "approved" },
-      { id: "3", paddleNumber: "103", name: "Bob Wilson", email: "bob@example.com", phone: "555-0103", status: "pending" },
+      { id: "BID-101", paddleNumber: "101", name: "John Smith", email: "john@example.com", phone: "555-0101", status: "approved", itemsBought: 5, totalSpent: 12500 },
+      { id: "BID-102", paddleNumber: "102", name: "Alice Johnson", email: "alice@example.com", phone: "555-0102", status: "approved", itemsBought: 8, totalSpent: 24000 },
+      { id: "BID-103", paddleNumber: "103", name: "Bob Wilson", email: "bob@example.com", phone: "555-0103", status: "pending", itemsBought: 0, totalSpent: 0 },
     ]
   },
 
@@ -252,5 +270,32 @@ export const eventService = {
     if (index !== -1) {
       MOCK_SALES.splice(index, 1)
     }
+  },
+
+  async getBuyerDetails(buyerId: string) {
+    await delay(500)
+    // Mock buyer details
+    const bidders = await this.getEventBidders("any")
+    return bidders.find(b => b.id === buyerId)
+  },
+
+  async getBuyerPurchases(buyerId: string, eventId: string) {
+    await delay(600)
+    // Mock purchases
+    return Array.from({ length: 5 }).map((_, i) => {
+      const price = Math.floor(Math.random() * 5000) + 100
+      const premium = Math.floor(price * 0.15)
+      const tax = Math.floor(price * 0.08)
+      return {
+        id: `purchase-${i}`,
+        lot: `${200 + i}`,
+        description: `Mock Purchase Item ${i + 1}`,
+        price,
+        premium,
+        tax,
+        total: price + premium + tax,
+        date: "2024-04-15"
+      }
+    })
   }
 }
