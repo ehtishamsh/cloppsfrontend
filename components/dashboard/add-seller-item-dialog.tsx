@@ -26,14 +26,14 @@ const itemSchema = z.object({
 
 type FormData = z.infer<typeof itemSchema>
 
-interface AddCosignerItemDialogProps {
+interface AddSellerItemDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess: (data: any) => void
   initialData?: any
 }
 
-export function AddCosignerItemDialog({ open, onOpenChange, onSuccess, initialData }: AddCosignerItemDialogProps) {
+export function AddSellerItemDialog({ open, onOpenChange, onSuccess, initialData }: AddSellerItemDialogProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<FormData>({

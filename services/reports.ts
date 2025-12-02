@@ -46,7 +46,7 @@ const summaryData: SummaryStat[] = [
     icon: "TrendingUp",
   },
   {
-    title: "Active Cosigners",
+    title: "Active Sellers",
     value: "573",
     description: "+201 since last month",
     icon: "Users",
@@ -144,7 +144,7 @@ export const reportsService = {
       itemsSold: 38,
       averagePrice: "$3,301.32",
       topSale: "$45,000.00",
-      cosigners: 8,
+      sellers: 8,
       totalTax: "$10,349.63",
       totalCommission: "$12,545.00",
       totalPayout: "$102,555.37",

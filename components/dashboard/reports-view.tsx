@@ -203,9 +203,9 @@ export function ReportsView() {
           <div className="grid gap-4 md:grid-cols-2">
             <Card>
               <CardHeader>
-                <CardTitle>Cosigner Performance</CardTitle>
+                <CardTitle>Seller Performance</CardTitle>
                 <CardDescription>
-                  Top performing cosigners by revenue
+                  Top performing sellers by revenue
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -215,15 +215,15 @@ export function ReportsView() {
                     { name: "Alice Johnson", revenue: "$98,500", items: 32 },
                     { name: "Robert Wilson", revenue: "$76,200", items: 28 },
                     { name: "Sarah Davis", revenue: "$54,300", items: 19 },
-                  ].map((cosigner, index) => (
+                  ].map((seller, index) => (
                     <div key={index} className="flex items-center justify-between">
                       <div className="space-y-1">
-                        <p className="text-sm font-medium">{cosigner.name}</p>
+                        <p className="text-sm font-medium">{seller.name}</p>
                         <p className="text-xs text-muted-foreground">
-                          {cosigner.items} items sold
+                          {seller.items} items sold
                         </p>
                       </div>
-                      <div className="font-medium">{cosigner.revenue}</div>
+                      <div className="font-medium">{seller.revenue}</div>
                     </div>
                   ))}
                 </div>

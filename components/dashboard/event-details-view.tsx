@@ -7,36 +7,102 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Calendar, MapPin, Users, DollarSign, FileText, ArrowLeft, PlayCircle, PauseCircle, StopCircle } from "lucide-react"
 import Link from "next/link"
 import { SalesTable } from "@/components/dashboard/sales-table"
-import { CosignerManagement } from "@/components/dashboard/cosigner-management"
+import { SellerManagement } from "@/components/dashboard/seller-management"
 import { EventReports } from "@/components/dashboard/event-reports"
 import { EventBidders } from "@/components/dashboard/event-bidders"
 import { Separator } from "@/components/ui/separator"
 import { eventService } from "@/services/events"
 import { LoadingSkeleton } from "@/components/shared/loading"
 import { toast } from "sonner"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 export function EventDetailsView({ eventId }: { eventId: string }) {
   const [event, setEvent] = useState<any>(null)
+  const [sales, setSales] = useState<any[]>([])
   const [status, setStatus] = useState("")
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    loadEvent()
+    loadData()
   }, [eventId])
 
-  const loadEvent = async () => {
+  const loadData = async () => {
     try {
-      const data = await eventService.getEventDetails(eventId)
-      if (data) {
-        setEvent(data)
-        setStatus(data.status)
+      const [eventData, salesData] = await Promise.all([
+        eventService.getEventDetails(eventId),
+        eventService.getSales(eventId)
+      ])
+      
+      if (eventData) {
+        setEvent(eventData)
+        setStatus(eventData.status)
       }
+      setSales(salesData)
     } catch (error) {
       toast.error("Failed to load event details")
     } finally {
       setIsLoading(false)
     }
   }
+
+  // Calculations
+  const calculateFinancials = () => {
+    if (!event || !sales) return null
+
+    const commissionRate = event.commissionRate / 100
+    const buyerPremiumRate = event.buyersPremium / 100
+    const taxRate = event.taxRate / 100
+
+    let totalSales = 0
+    let totalCommission = 0
+    let totalBuyerPremium = 0
+    let totalTax = 0
+
+    const detailedSales = sales.map(sale => {
+      const price = sale.price
+      const commission = price * commissionRate
+      const buyerPremium = price * buyerPremiumRate
+      const tax = price * taxRate
+      // Assuming Total is the total amount processed/involved
+      const total = price + commission + buyerPremium + tax
+
+      totalSales += price
+      totalCommission += commission
+      totalBuyerPremium += buyerPremium
+      totalTax += tax
+
+      return {
+        ...sale,
+        commission,
+        buyerPremium,
+        tax,
+        total
+      }
+    })
+
+    const grandTotal = totalSales + totalCommission + totalBuyerPremium + totalTax
+
+    return {
+      totalSales,
+      totalCommission,
+      totalBuyerPremium,
+      totalTax,
+      grandTotal,
+      detailedSales,
+      commissionRate: event.commissionRate,
+      buyerPremiumRate: event.buyersPremium,
+      taxRate: event.taxRate
+    }
+  }
+
+  const financials = calculateFinancials()
 
   if (isLoading) {
     return <LoadingSkeleton />
@@ -115,9 +181,9 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
             Summary
           </TabsTrigger>
           
-          <TabsTrigger value="cosigners" className="flex items-center gap-2">
+          <TabsTrigger value="sellers" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
-            Cosigners
+            Sellers
           </TabsTrigger>
           <TabsTrigger value="buyers" className="flex items-center gap-2">
             <Users className="h-4 w-4" />
@@ -134,50 +200,140 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
             status={status}
             onPostAuction={() => {
               setStatus("Closed")
-              // Switch to cosigners tab to show invoices
+              // Switch to sellers tab to show invoices
               const tabs = document.querySelector('[role="tablist"]') as HTMLElement
-              const cosignersTab = tabs?.querySelector('[value="cosigners"]') as HTMLElement
-              cosignersTab?.click()
+              const sellersTab = tabs?.querySelector('[value="sellers"]') as HTMLElement
+              sellersTab?.click()
             }}
             onGenerateInvoices={() => {
-              // Switch to cosigners tab to show invoices
+              // Switch to sellers tab to show invoices
               const tabs = document.querySelector('[role="tablist"]') as HTMLElement
-              const cosignersTab = tabs?.querySelector('[value="cosigners"]') as HTMLElement
-              cosignersTab?.click()
+              const sellersTab = tabs?.querySelector('[value="sellers"]') as HTMLElement
+              sellersTab?.click()
             }}
           />
         </TabsContent>
 
         <TabsContent value="summary">
-          <Card>
-            <CardHeader>
-              <CardTitle>Event Financial Summary</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="rounded-lg border p-4">
-                  <div className="text-sm font-medium text-muted-foreground">Total Sales</div>
-                  <div className="text-2xl font-bold">$45,000.00</div>
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Event Financial Summary</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                  <div className="rounded-lg border p-4">
+                    <div className="text-sm font-medium text-muted-foreground">Total Sales</div>
+                    <div className="text-2xl font-bold">
+                      {financials?.totalSales.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+                  </div>
+                  <div className="rounded-lg border p-4">
+                    <div className="text-sm font-medium text-muted-foreground">Default Commission</div>
+                    <div className="text-2xl font-bold text-green-600">
+                      {financials?.totalCommission.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      ({financials?.commissionRate}%)
+                    </div>
+                  </div>
+                  <div className="rounded-lg border p-4">
+                    <div className="text-sm font-medium text-muted-foreground">Buyer Premium</div>
+                    <div className="text-2xl font-bold text-green-600">
+                      {financials?.totalBuyerPremium.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      ({financials?.buyerPremiumRate}%)
+                    </div>
+                  </div>
+                  <div className="rounded-lg border p-4">
+                    <div className="text-sm font-medium text-muted-foreground">Tax</div>
+                    <div className="text-2xl font-bold text-red-600">
+                      {financials?.totalTax.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      ({financials?.taxRate}%)
+                    </div>
+                  </div>
+                  <div className="rounded-lg border p-4 bg-green-50">
+                    <div className="text-sm font-medium text-muted-foreground">Total</div>
+                    <div className="text-2xl font-bold text-green-600">
+                      {financials?.grandTotal.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </div>
+                  </div>
                 </div>
-                <div className="rounded-lg border p-4">
-                  <div className="text-sm font-medium text-muted-foreground">Commission</div>
-                  <div className="text-2xl font-bold text-red-600">-$4,500.00</div>
-                </div>
-                <div className="rounded-lg border p-4">
-                  <div className="text-sm font-medium text-muted-foreground">Tax</div>
-                  <div className="text-2xl font-bold text-red-600">-$3,712.50</div>
-                </div>
-                <div className="rounded-lg border p-4 bg-green-50">
-                  <div className="text-sm font-medium text-muted-foreground">Grand Total</div>
-                  <div className="text-2xl font-bold text-green-600">$36,787.50</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Detailed Breakdown</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Seller ID</TableHead>
+                      <TableHead>Buyer ID</TableHead>
+                      <TableHead>Item</TableHead>
+                      <TableHead className="text-right">Price</TableHead>
+                      <TableHead className="text-right">Commission</TableHead>
+                      <TableHead className="text-right">Buyer Premium</TableHead>
+                      <TableHead className="text-right">Tax</TableHead>
+                      <TableHead className="text-right">Total</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {financials?.detailedSales.map((sale: any) => (
+                      <TableRow key={sale.id}>
+                        <TableCell>{sale.sellerId || "N/A"}</TableCell>
+                        <TableCell>{sale.bidderNumber}</TableCell>
+                        <TableCell>{sale.title}</TableCell>
+                        <TableCell className="text-right">
+                          {sale.price.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </TableCell>
+                        <TableCell className="text-right text-green-600">
+                          {sale.commission.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </TableCell>
+                        <TableCell className="text-right text-green-600">
+                          {sale.buyerPremium.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </TableCell>
+                        <TableCell className="text-right text-red-600">
+                          {sale.tax.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </TableCell>
+                        <TableCell className="text-right font-bold">
+                          {sale.total.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                    {/* Totals Row */}
+                    <TableRow className="bg-muted/50 font-bold">
+                      <TableCell colSpan={3}>Totals</TableCell>
+                      <TableCell className="text-right">
+                        {financials?.totalSales.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </TableCell>
+                      <TableCell className="text-right text-green-600">
+                        {financials?.totalCommission.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </TableCell>
+                      <TableCell className="text-right text-green-600">
+                        {financials?.totalBuyerPremium.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </TableCell>
+                      <TableCell className="text-right text-red-600">
+                        {financials?.totalTax.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {financials?.grandTotal.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
-        <TabsContent value="cosigners">
-          <CosignerManagement eventId={eventId} />
+        <TabsContent value="sellers">
+          <SellerManagement eventId={eventId} />
         </TabsContent>
 
         <TabsContent value="buyers">

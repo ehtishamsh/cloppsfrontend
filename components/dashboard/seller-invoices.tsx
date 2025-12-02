@@ -12,12 +12,12 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Download, Mail, Printer } from "lucide-react"
-import { cosignerService, type Invoice } from "@/services/cosigner"
+import { sellerService, type Invoice } from "@/services/seller"
 import { LoadingSkeleton } from "@/components/shared/loading"
 import { EmptyState } from "@/components/shared/empty-state"
 import { toast } from "sonner"
 
-export function CosignerInvoices() {
+export function SellerInvoices() {
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -27,7 +27,7 @@ export function CosignerInvoices() {
 
   const loadInvoices = async () => {
     try {
-      const data = await cosignerService.getInvoices()
+      const data = await sellerService.getInvoices()
       setInvoices(data)
     } catch (error) {
       toast.error("Failed to load invoices")

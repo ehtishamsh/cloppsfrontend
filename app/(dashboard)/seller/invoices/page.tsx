@@ -1,7 +1,7 @@
-import { CosignerInvoices } from "@/components/dashboard/cosigner-invoices"
+import { SellerInvoices } from "@/components/dashboard/seller-invoices"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-export default function CosignerInvoicesPage() {
+export default function SellerInvoicesPage() {
   return (
     <div className="space-y-6">
       <div>
@@ -19,7 +19,7 @@ export default function CosignerInvoicesPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <CosignerInvoices />
+          <SellerInvoices />
         </CardContent>
       </Card>
     </div>

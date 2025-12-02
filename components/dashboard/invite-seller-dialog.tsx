@@ -16,12 +16,12 @@ import { Label } from "@/components/ui/label"
 import { Loader2, Mail } from "lucide-react"
 import { toast } from "sonner"
 
-interface InviteCosignerDialogProps {
+interface InviteSellerDialogProps {
   eventId: string
   onInvite?: () => void
 }
 
-export function InviteCosignerDialog({ eventId, onInvite }: InviteCosignerDialogProps) {
+export function InviteSellerDialog({ eventId, onInvite }: InviteSellerDialogProps) {
   const [open, setOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState("")
@@ -50,14 +50,14 @@ export function InviteCosignerDialog({ eventId, onInvite }: InviteCosignerDialog
       <DialogTrigger asChild>
         <Button variant="outline">
           <Mail className="mr-2 h-4 w-4" />
-          Invite Cosigner
+          Invite Seller
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Invite Cosigner</DialogTitle>
+          <DialogTitle>Invite Seller</DialogTitle>
           <DialogDescription>
-            Send an email invitation to a cosigner to join this event.
+            Send an email invitation to a seller to join this event.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleInvite}>
@@ -67,7 +67,7 @@ export function InviteCosignerDialog({ eventId, onInvite }: InviteCosignerDialog
               <Input
                 id="email"
                 type="email"
-                placeholder="cosigner@example.com"
+                placeholder="seller@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required

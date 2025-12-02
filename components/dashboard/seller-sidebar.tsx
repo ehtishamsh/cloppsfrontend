@@ -8,12 +8,12 @@ import { Button } from "@/components/ui/button"
 import Image from "next/image"
 
 const navItems = [
-  { href: "/cosigner", label: "Events", icon: Calendar },
-  { href: "/cosigner/invoices", label: "Invoices", icon: FileText },
-  { href: "/cosigner/profile", label: "Profile", icon: User },
+  { href: "/seller", label: "Events", icon: Calendar },
+  { href: "/seller/invoices", label: "Invoices", icon: FileText },
+  { href: "/seller/profile", label: "Profile", icon: User },
 ]
 
-export function CosignerSidebar() {
+export function SellerSidebar() {
   const pathname = usePathname()
 
   return (

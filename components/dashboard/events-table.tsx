@@ -1,17 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { ColumnDef } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, ArrowUpDown } from "lucide-react"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +20,7 @@ import { toast } from "sonner"
 import { LoadingSkeleton } from "@/components/shared/loading"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ConfirmDialog } from "@/components/shared/confirm-dialog"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { DataTable } from "@/components/ui/data-table"
 
 export function EventsTable() {
   const [events, setEvents] = useState<Event[]>([])
@@ -72,6 +65,94 @@ export function EventsTable() {
     }
   }
 
+  const columns: ColumnDef<Event>[] = [
+    {
+      accessorKey: "name",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Event Name
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => (
+        <Link href={`/marketplace/events/${row.original.id}`} className="hover:underline font-medium">
+          {row.getValue("name")}
+        </Link>
+      ),
+    },
+    {
+      accessorKey: "startDate",
+      header: "Event Date",
+    },
+    {
+      accessorKey: "time",
+      header: "Time",
+      cell: ({ row }) => row.getValue("time") || 'N/A',
+    },
+    {
+      accessorKey: "status",
+      header: "Status",
+      cell: ({ row }) => {
+        const status = row.getValue("status") as string
+        return (
+          <Badge
+            variant={
+              status === "Live"
+                ? "destructive"
+                : status === "Scheduled"
+                ? "default"
+                : "secondary"
+            }
+          >
+            {status}
+          </Badge>
+        )
+      },
+    },
+    {
+      id: "actions",
+      cell: ({ row }) => {
+        const event = row.original
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Open menu</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link href={`/marketplace/events/${event.id}`}>
+                  View Details
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/marketplace/events/${event.id}/edit`}>
+                  Edit Event
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="text-destructive"
+                onClick={() => handleDelete(event.id)}
+                disabled={deletingId === event.id}
+              >
+                {deletingId === event.id ? "Deleting..." : "Delete"}
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )
+      },
+    },
+  ]
+
   if (isLoading) {
     return <LoadingSkeleton />
   }
@@ -97,85 +178,7 @@ export function EventsTable() {
           <CardTitle>Events</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="rounded-md border">
-            <ScrollArea className="w-full whitespace-nowrap rounded-md border">
-              <div className="w-full max-md:max-w-[600px] max-sm:max-w-[350px]">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Event Name</TableHead>
-                    <TableHead>Event Date</TableHead>
-                    <TableHead>Time</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {events.map((event) => (
-                    <TableRow key={event.id}>
-                      <TableCell className="font-medium">
-                        <Link href={`/marketplace/events/${event.id}`} className="hover:underline">
-                          {event.name}
-                        </Link>
-                      </TableCell>
-                      <TableCell>
-                        {event.startDate}
-                      </TableCell>
-                      <TableCell>
-                        {event.time || 'N/A'}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={
-                            event.status === "Live"
-                              ? "destructive"
-                              : event.status === "Scheduled"
-                              ? "default"
-                              : "secondary"
-                          }
-                        >
-                          {event.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <span className="sr-only">Open menu</span>
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                            <DropdownMenuItem asChild>
-                              <Link href={`/marketplace/events/${event.id}`}>
-                                View Details
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuItem asChild>
-                              <Link href={`/marketplace/events/${event.id}/edit`}>
-                                Edit Event
-                              </Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              className="text-destructive"
-                              onClick={() => handleDelete(event.id)}
-                              disabled={deletingId === event.id}
-                            >
-                              {deletingId === event.id ? "Deleting..." : "Delete"}
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              </div>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
-          </div>
+          <DataTable columns={columns} data={events} searchKey="name" />
         </CardContent>
       </Card>
 

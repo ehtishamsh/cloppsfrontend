@@ -1,4 +1,4 @@
-export interface CosignerEvent {
+export interface SellerEvent {
   id: string
   name: string
   date: string
@@ -20,7 +20,7 @@ export interface Invoice {
   status: "Paid" | "Pending"
 }
 
-export interface CosignerSaleItem {
+export interface SellerSaleItem {
   id: string
   lot: string
   description: string
@@ -31,7 +31,7 @@ export interface CosignerSaleItem {
   status: "Sold" | "Unsold"
 }
 
-const MOCK_AVAILABLE_EVENTS: CosignerEvent[] = [
+const MOCK_AVAILABLE_EVENTS: SellerEvent[] = [
   {
     id: "EVT-001",
     name: "Spring Classic Car Auction",
@@ -101,9 +101,9 @@ const MOCK_INVOICES: Invoice[] = [
   },
 ]
 
-// Mock sales data for specific cosigners in specific events
-const MOCK_COSIGNER_SALES: Record<string, Record<string, CosignerSaleItem[]>> = {
-  "1": { // Cosigner ID 1
+// Mock sales data for specific sellers in specific events
+const MOCK_SELLER_SALES: Record<string, Record<string, SellerSaleItem[]>> = {
+  "1": { // Seller ID 1
     "EVT-001": [ // Event ID EVT-001
       { id: "1", lot: "101", description: "Vintage Vase", price: 500, commission: 50, payout: 410, status: "Sold" },
       { id: "2", lot: "105", description: "Antique Chair", price: 1200, commission: 120, payout: 984, status: "Sold" },
@@ -122,8 +122,8 @@ const MOCK_COSIGNER_SALES: Record<string, Record<string, CosignerSaleItem[]>> = 
 
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-export const cosignerService = {
-  async getAvailableEvents(): Promise<CosignerEvent[]> {
+export const sellerService = {
+  async getAvailableEvents(): Promise<SellerEvent[]> {
     await new Promise((resolve) => setTimeout(resolve, 800))
     return [...MOCK_AVAILABLE_EVENTS]
   },
@@ -141,19 +141,19 @@ export const cosignerService = {
     return [...MOCK_INVOICES]
   },
 
-  async getCosigners() {
+  async getSellers() {
     await new Promise((resolve) => setTimeout(resolve, 500))
     return [
-      { id: "COS-101", name: "Jane Smith", nickname: "Jane's Autos", email: "jane@example.com", phone: "555-0101", status: "approved", items: 25 },
-      { id: "COS-102", name: "Bob Wilson", nickname: "BW Collectibles", email: "bob@example.com", phone: "555-0102", status: "pending", items: 37 },
-      { id: "COS-103", name: "Alice Brown", nickname: "Alice Antiques", email: "alice@example.com", phone: "555-0103", status: "approved", items: 6 },
+      { id: "SEL-101", name: "Jane Smith", nickname: "Jane's Autos", email: "jane@example.com", phone: "555-0101", status: "approved", items: 25 },
+      { id: "SEL-102", name: "Bob Wilson", nickname: "BW Collectibles", email: "bob@example.com", phone: "555-0102", status: "pending", items: 37 },
+      { id: "SEL-103", name: "Alice Brown", nickname: "Alice Antiques", email: "alice@example.com", phone: "555-0103", status: "approved", items: 6 },
     ]
   },
 
-  async getCosignerDetails(cosignerId: string) {
+  async getSellerDetails(sellerId: string) {
     await delay(500)
     
-    // Mock event history for each cosigner
+    // Mock event history for each seller
     const eventHistoryMap: Record<string, any[]> = {
       "1": [
         {
@@ -229,12 +229,12 @@ export const cosignerService = {
       ],
     }
 
-    return eventHistoryMap[cosignerId] || []
+    return eventHistoryMap[sellerId] || []
   },
 
-  async getCosignerSales(cosignerId: string, eventId: string): Promise<CosignerSaleItem[]> {
+  async getSellerSales(sellerId: string, eventId: string): Promise<SellerSaleItem[]> {
     await delay(600)
-    const sales = MOCK_COSIGNER_SALES[cosignerId]?.[eventId] || []
+    const sales = MOCK_SELLER_SALES[sellerId]?.[eventId] || []
     
     // If no specific mock data exists, generate some random data for demo purposes
     if (sales.length === 0) {
@@ -258,9 +258,9 @@ export const cosignerService = {
     return sales
   },
 
-  async addCosigner(data: any) {
+  async addSeller(data: any) {
     await delay(500)
-    const newCosigner = {
+    const newSeller = {
       id: Math.random().toString(36).substr(2, 9),
       name: data.name,
       email: data.email,
@@ -269,10 +269,10 @@ export const cosignerService = {
       status: "pending",
       items: 0,
     }
-    return newCosigner
+    return newSeller
   },
 
-  async updateCosigner(id: string, data: any) {
+  async updateSeller(id: string, data: any) {
     await delay(500)
     return {
       id,

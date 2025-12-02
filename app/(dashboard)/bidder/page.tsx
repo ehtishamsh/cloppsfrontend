@@ -3,20 +3,13 @@
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Download, Gavel, FileText, Calendar } from "lucide-react"
+import { Gavel, FileText, Calendar } from "lucide-react"
 import { bidderService, type BidderEnrollment, type BidderPurchase, type BidderStatement } from "@/services/bidder"
 import { LoadingSkeleton } from "@/components/shared/loading"
 import { toast } from "sonner"
+import { EnrollmentsTable } from "@/components/dashboard/bidder/enrollments-table"
+import { PurchasesTable } from "@/components/dashboard/bidder/purchases-table"
+import { StatementsTable } from "@/components/dashboard/bidder/statements-table"
 
 export default function BidderDashboardPage() {
   const [isLoading, setIsLoading] = useState(true)
@@ -115,33 +108,7 @@ export default function BidderDashboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Event Name</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead>Paddle #</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {enrollments.map((enrollment) => (
-                    <TableRow key={enrollment.id}>
-                      <TableCell className="font-medium">{enrollment.eventName}</TableCell>
-                      <TableCell>{enrollment.date}</TableCell>
-                      <TableCell>{enrollment.paddleNumber || "-"}</TableCell>
-                      <TableCell>
-                        <Badge variant={
-                          enrollment.status === 'approved' ? 'default' : 
-                          enrollment.status === 'rejected' ? 'destructive' : 'secondary'
-                        }>
-                          {enrollment.status}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <EnrollmentsTable data={enrollments} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -155,28 +122,7 @@ export default function BidderDashboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Event</TableHead>
-                    <TableHead>Lot #</TableHead>
-                    <TableHead>Item</TableHead>
-                    <TableHead className="text-right">Price</TableHead>
-                    <TableHead>Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {purchases.map((purchase) => (
-                    <TableRow key={purchase.id}>
-                      <TableCell>{purchase.eventName}</TableCell>
-                      <TableCell>{purchase.lotNumber}</TableCell>
-                      <TableCell className="font-medium">{purchase.itemTitle}</TableCell>
-                      <TableCell className="text-right">${purchase.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell>{purchase.date}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <PurchasesTable data={purchases} />
             </CardContent>
           </Card>
         </TabsContent>
@@ -190,48 +136,7 @@ export default function BidderDashboardPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Statement ID</TableHead>
-                    <TableHead>Event</TableHead>
-                    <TableHead>Date</TableHead>
-                    <TableHead className="text-right">Total Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {statements.map((statement) => (
-                    <TableRow key={statement.id}>
-                      <TableCell className="font-medium">{statement.id}</TableCell>
-                      <TableCell>{statement.eventName}</TableCell>
-                      <TableCell>{statement.date}</TableCell>
-                      <TableCell className="text-right">${statement.totalAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell>
-                        <Badge variant={statement.status === 'paid' ? 'default' : 'destructive'}>
-                          {statement.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => {
-                            toast.success(`Downloading Statement #${statement.id}...`)
-                            setTimeout(() => {
-                              toast.success("Download complete")
-                            }, 1000)
-                          }}
-                        >
-                          <Download className="mr-2 h-4 w-4" />
-                          Download
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+              <StatementsTable data={statements} />
             </CardContent>
           </Card>
         </TabsContent>

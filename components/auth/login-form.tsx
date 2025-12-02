@@ -47,8 +47,8 @@ export function LoginForm() {
         toast.success("Welcome to Bidder Dashboard!")
         router.push("/bidder")
       } else {
-        toast.success("Welcome to Cosigner Dashboard!")
-        router.push("/cosigner")
+        toast.success("Welcome to seller Dashboard!")
+        router.push("/seller")
       }
     } catch (error) {
       toast.error("Invalid credentials")
@@ -57,7 +57,7 @@ export function LoginForm() {
     }
   }
 
-  const handleMockLogin = (type: "marketplace" | "cosigner" | "bidder") => {
+  const handleMockLogin = (type: "marketplace" | "seller" | "bidder") => {
     if (type === "marketplace") {
       form.setValue("email", "admin@clopps.com")
       form.setValue("password", "admin123")
@@ -66,7 +66,7 @@ export function LoginForm() {
       form.setValue("password", "bidder123")
     } else {
       form.setValue("email", "jane@example.com")
-      form.setValue("password", "cosigner123")
+      form.setValue("password", "seller123")
     }
   }
 
@@ -89,16 +89,16 @@ export function LoginForm() {
             </Button>
           </div>
           <div className="mt-3 space-y-1">
-            <p className="font-medium">Cosigner:</p>
+            <p className="font-medium">Seller:</p>
             <p className="text-sm">Email: <code className="bg-muted px-1 rounded">jane@example.com</code></p>
-            <p className="text-sm">Password: <code className="bg-muted px-1 rounded">cosigner123</code></p>
+            <p className="text-sm">Password: <code className="bg-muted px-1 rounded">seller123</code></p>
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={() => handleMockLogin("cosigner")}
+              onClick={() => handleMockLogin("seller")}
               className="mt-1"
             >
-              Fill Cosigner Credentials
+              Fill Seller Credentials
             </Button>
           </div>
           <div className="mt-3 space-y-1">

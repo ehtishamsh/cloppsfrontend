@@ -124,11 +124,11 @@ export function EventReports({ eventId }: EventReportsProps) {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Cosigners</CardTitle>
+            <CardTitle className="text-sm font-medium">Sellers</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.cosigners}</div>
+            <div className="text-2xl font-bold">{stats.sellers}</div>
             <p className="text-xs text-muted-foreground">
               Active participants
             </p>
@@ -163,13 +163,13 @@ export function EventReports({ eventId }: EventReportsProps) {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Cosigner Payout</CardTitle>
+            <CardTitle className="text-sm font-medium">Seller Payout</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.totalPayout}</div>
             <p className="text-xs text-muted-foreground">
-              Net due to cosigners
+              Net due to Sellers
             </p>
           </CardContent>
         </Card>

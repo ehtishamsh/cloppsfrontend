@@ -43,7 +43,7 @@ export default function HomePage() {
               <span className="text-primary">Modern Auctions</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-              Streamline operations, manage cosigners, and automate financials with the most powerful platform built for forward-thinking auctioneers.
+              Streamline operations, manage sellers, and automate financials with the most powerful platform built for forward-thinking auctioneers.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
               <Link href="/signup">
@@ -54,7 +54,7 @@ export default function HomePage() {
               </Link>
               <Link href="/signup">
                 <Button size="lg" variant="outline" className="h-14 px-8 text-base bg-background/50 backdrop-blur-sm hover:bg-background/80">
-                  Join as Cosigner
+                  Join as Seller
                 </Button>
               </Link>
             </div>
@@ -127,9 +127,9 @@ export default function HomePage() {
                   <div className="h-12 w-12 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-4 text-indigo-600">
                     <Users className="h-6 w-6" />
                   </div>
-                  <CardTitle className="text-xl mb-2">Cosigner Portal</CardTitle>
+                  <CardTitle className="text-xl mb-2">Seller Portal</CardTitle>
                   <p className="text-muted-foreground leading-relaxed">
-                    Give your cosigners a dedicated dashboard to track their items, view sales, and download invoices automatically.
+                    Give your sellers a dedicated dashboard to track their items, view sales, and download invoices automatically.
                   </p>
                 </CardHeader>
               </Card>
@@ -213,7 +213,7 @@ export default function HomePage() {
               <div className="relative z-10 max-w-3xl mx-auto space-y-8">
                 <h2 className="text-3xl md:text-5xl font-bold tracking-tight">Ready to modernize your auctions?</h2>
                 <p className="text-primary-foreground/80 text-xl max-w-2xl mx-auto">
-                  Join hundreds of marketplaces using Clopps to scale their operations and delight their cosigners.
+                  Join hundreds of marketplaces using Clopps to scale their operations and delight their sellers.
                 </p>
                 <Link href="/signup">
                   <Button size="lg" variant="secondary" className="h-14 px-10 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all">

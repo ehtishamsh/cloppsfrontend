@@ -1,11 +1,11 @@
-import { CosignerEventsList } from "@/components/dashboard/cosigner-events-list"
+import { SellerEventsList } from "@/components/dashboard/seller-events-list"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-export default function CosignerDashboardPage() {
+export default function SellerDashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">Cosigner Dashboard</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Seller Dashboard</h2>
         <p className="text-muted-foreground">
           Find events to join and manage your consignments.
         </p>
@@ -19,7 +19,7 @@ export default function CosignerDashboardPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <CosignerEventsList type="available" />
+          <SellerEventsList type="available" />
         </CardContent>
       </Card>
 
@@ -31,7 +31,7 @@ export default function CosignerDashboardPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <CosignerEventsList type="enrolled" />
+          <SellerEventsList type="enrolled" />
         </CardContent>
       </Card>
     </div>

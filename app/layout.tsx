@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "Clopps - Auction Management Platform",
-  description: "Professional auction management for marketplaces and cosigners.",
+  description: "Professional auction management for marketplaces and sellers.",
 };
 
 export default function RootLayout({

@@ -1,10 +1,10 @@
-import { CosignerSidebar } from "@/components/dashboard/cosigner-sidebar"
-import { MobileCosignerSidebar } from "@/components/dashboard/mobile-cosigner-sidebar"
+import { SellerSidebar } from "@/components/dashboard/seller-sidebar"
+import { MobileSellerSidebar } from "@/components/dashboard/mobile-seller-sidebar"
 import { UserNav } from "@/components/dashboard/user-nav"
 import { Breadcrumbs } from "@/components/shared/breadcrumbs"
 import Image from "next/image"
 
-export default function CosignerDashboardLayout({
+export default function SellerDashboardLayout({
   children,
 }: {
   children: React.ReactNode
@@ -13,14 +13,14 @@ export default function CosignerDashboardLayout({
     <div className="flex min-h-screen bg-muted/10">
       {/* Desktop Sidebar */}
       <div className="hidden md:block w-72 border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 fixed inset-y-0 z-30">
-        <CosignerSidebar />
+        <SellerSidebar />
       </div>
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col md:pl-72 transition-all duration-300">
         {/* Header */}
         <header className="sticky top-0 z-20 flex h-16 items-center gap-4 border-b bg-background/80 backdrop-blur-md px-6 shadow-sm">
-          <MobileCosignerSidebar />
+          <MobileSellerSidebar />
           <div className="flex-1 flex items-center gap-4">
        
             <div className="hidden md:block">

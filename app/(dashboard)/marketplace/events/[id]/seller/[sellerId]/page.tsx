@@ -17,20 +17,20 @@ import {
 } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Save, Loader2, Calendar, DollarSign, FileText, Edit, Plus, Pencil, Mail, Printer } from "lucide-react"
-import { AddCosignerItemDialog } from "@/components/dashboard/add-cosigner-item-dialog"
+import { AddSellerItemDialog } from "@/components/dashboard/add-seller-item-dialog"
 import { toast } from "sonner"
-import { cosignerService } from "@/services/cosigner"
+import { sellerService } from "@/services/seller"
 import { eventService } from "@/services/events"
 
-export default function EventCosignerDetailsPage({ 
+export default function EventSellerDetailsPage({ 
   params 
 }: { 
-  params: Promise<{ id: string, cosignerId: string }>
+  params: Promise<{ id: string, sellerId: string }>
 }) {
-  const { id: eventId, cosignerId } = use(params)
+  const { id: eventId, sellerId } = use(params)
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
-  const [cosigner, setCosigner] = useState<any>(null)
+  const [seller, setSeller] = useState<any>(null)
   const [event, setEvent] = useState<any>(null)
   const [sales, setSales] = useState<any[]>([])
   const [isSaving, setIsSaving] = useState(false)
@@ -43,18 +43,18 @@ export default function EventCosignerDetailsPage({
 
   const loadData = async () => {
     try {
-      // Load cosigner details
-      const allCosigners = await cosignerService.getCosigners()
-      const foundCosigner = allCosigners.find(c => c.id === cosignerId)
-      setCosigner(foundCosigner)
+      // Load seller details
+      const allSellers = await sellerService.getSellers()
+      const foundSeller = allSellers.find(s => s.id === sellerId)
+      setSeller(foundSeller)
 
       // Load event details
       const eventDetails = await eventService.getEventDetails(eventId)
       setEvent(eventDetails)
 
-      // Load sales for this cosigner in this event
-      const cosignerSales = await cosignerService.getCosignerSales(cosignerId, eventId)
-      setSales(cosignerSales)
+      // Load sales for this seller in this event
+      const sellerSales = await sellerService.getSellerSales(sellerId, eventId)
+      setSales(sellerSales)
     } catch (error) {
       toast.error("Failed to load data")
     } finally {
@@ -107,7 +107,7 @@ export default function EventCosignerDetailsPage({
     )
   }
 
-  if (!cosigner || !event) {
+  if (!seller || !event) {
     return <div>Data not found</div>
   }
 
@@ -124,18 +124,18 @@ export default function EventCosignerDetailsPage({
         </Button>
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
-            {cosigner.name}
+            {seller.name}
           </h1>
           <p className="text-muted-foreground">
             Event: {event.name}
           </p>
         </div>
-        <Badge variant={cosigner.status === 'approved' ? 'default' : 'secondary'} className="ml-auto">
-          {cosigner.status}
+        <Badge variant={seller.status === 'approved' ? 'default' : 'secondary'} className="ml-auto">
+          {seller.status}
         </Badge>
       </div>
 
-      <AddCosignerItemDialog 
+      <AddSellerItemDialog 
         open={isAddItemOpen} 
         onOpenChange={setIsAddItemOpen} 
         onSuccess={handleAddItem}
@@ -246,30 +246,30 @@ export default function EventCosignerDetailsPage({
         <TabsContent value="edit">
           <Card>
             <CardHeader>
-              <CardTitle>Edit Cosigner Information</CardTitle>
+              <CardTitle>Edit Seller Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" defaultValue={cosigner.name.split(' ')[0]} />
+                  <Input id="firstName" defaultValue={seller.name.split(' ')[0]} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" defaultValue={cosigner.name.split(' ')[1] || ''} />
+                  <Input id="lastName" defaultValue={seller.name.split(' ')[1] || ''} />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" defaultValue={cosigner.email} />
+                <Input id="email" defaultValue={seller.email} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
-                <Input id="phone" defaultValue={cosigner.phone} />
+                <Input id="phone" defaultValue={seller.phone} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="nickname">Business Name / Nickname</Label>
-                <Input id="nickname" defaultValue={cosigner.nickname || ''} />
+                <Input id="nickname" defaultValue={seller.nickname || ''} />
               </div>
               <Button onClick={handleSave} disabled={isSaving}>
                 {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

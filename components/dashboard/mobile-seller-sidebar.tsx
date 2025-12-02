@@ -3,10 +3,10 @@
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
 import { Menu } from "lucide-react"
-import { CosignerSidebar } from "@/components/dashboard/cosigner-sidebar"
+import { SellerSidebar } from "@/components/dashboard/seller-sidebar"
 import { useState } from "react"
 
-export function MobileCosignerSidebar() {
+export function MobileSellerSidebar() {
   const [open, setOpen] = useState(false)
 
   return (
@@ -19,7 +19,7 @@ export function MobileCosignerSidebar() {
       </SheetTrigger>
       <SheetContent side="left" className="p-0 w-72">
         <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-        <CosignerSidebar />
+        <SellerSidebar />
       </SheetContent>
     </Sheet>
   )

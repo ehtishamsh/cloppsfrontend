@@ -21,6 +21,7 @@ export interface SaleEntry {
   lotNumber: string
   bidderNumber: string
   buyerName?: string
+  sellerId?: string
   title: string
   category?: string
   price: number
@@ -114,6 +115,7 @@ const MOCK_SALES: SaleEntry[] = [
     price: 185000, 
     category: "Automobiles", 
     buyerName: "John Doe",
+    sellerId: "COS-001",
     imageUrl: "https://images.unsplash.com/photo-1566008885218-90abf9200ddb?auto=format&fit=crop&q=80&w=1000"
   },
   { 
@@ -124,6 +126,7 @@ const MOCK_SALES: SaleEntry[] = [
     price: 1200, 
     category: "Art", 
     buyerName: "Jane Smith",
+    sellerId: "COS-002",
     imageUrl: "https://images.unsplash.com/photo-1578321272128-769a1979a11a?auto=format&fit=crop&q=80&w=1000"
   },
   { 
@@ -134,6 +137,7 @@ const MOCK_SALES: SaleEntry[] = [
     price: 12500, 
     category: "Jewelry", 
     buyerName: "Robert Johnson",
+    sellerId: "COS-001",
     imageUrl: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&q=80&w=1000"
   },
   { 
@@ -144,6 +148,7 @@ const MOCK_SALES: SaleEntry[] = [
     price: 4500, 
     category: "Furniture", 
     buyerName: "Sarah Williams",
+    sellerId: "COS-003",
     imageUrl: "https://images.unsplash.com/photo-1567538096630-e0c55bd6374c?auto=format&fit=crop&q=80&w=1000"
   },
   { 
@@ -154,6 +159,7 @@ const MOCK_SALES: SaleEntry[] = [
     price: 6500, 
     category: "Musical Instruments", 
     buyerName: "Jane Smith",
+    sellerId: "COS-002",
     imageUrl: "https://images.unsplash.com/photo-1550985543-f47f38aee65d?auto=format&fit=crop&q=80&w=1000"
   },
   { 
@@ -164,6 +170,7 @@ const MOCK_SALES: SaleEntry[] = [
     price: 8900, 
     category: "Jewelry", 
     buyerName: "Michael Brown",
+    sellerId: "COS-001",
     imageUrl: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=1000"
   },
   { 
@@ -174,6 +181,7 @@ const MOCK_SALES: SaleEntry[] = [
     price: 2500, 
     category: "Books", 
     buyerName: "Emily Davis",
+    sellerId: "COS-004",
     imageUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=1000"
   },
 ]
@@ -199,7 +207,7 @@ export const eventService = {
       stats: {
         totalItems: event.itemsCount || 0,
         totalSales: event.totalSales || 0,
-        cosigners: 12,
+        sellers: 12,
       }
     }
   },

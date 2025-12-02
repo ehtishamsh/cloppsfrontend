@@ -26,8 +26,8 @@ export function Breadcrumbs() {
 
   if (items.length === 0) return null
 
-  const isCosigner = pathname.startsWith("/cosigner")
-  const homeHref = isCosigner ? "/cosigner" : "/marketplace"
+  const isSeller = pathname.startsWith("/seller")
+  const homeHref = isSeller ? "/seller" : "/marketplace"
 
   return (
     <nav className="flex items-center text-sm text-muted-foreground">

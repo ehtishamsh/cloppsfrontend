@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Loader2 } from "lucide-react"
 
-const cosignerSchema = z.object({
+const sellerSchema = z.object({
   firstName: z.string().min(2, "First name must be at least 2 characters"),
   lastName: z.string().min(2, "Last name must be at least 2 characters"),
   email: z.string().email("Invalid email address"),
@@ -25,20 +25,20 @@ const cosignerSchema = z.object({
   nickname: z.string().optional(),
 })
 
-type FormData = z.infer<typeof cosignerSchema>
+type FormData = z.infer<typeof sellerSchema>
 
-interface AddCosignerDialogProps {
+interface AddSellerDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess: (data: any) => void
   initialData?: any
 }
 
-export function AddCosignerDialog({ open, onOpenChange, onSuccess, initialData }: AddCosignerDialogProps) {
+export function AddSellerDialog({ open, onOpenChange, onSuccess, initialData }: AddSellerDialogProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<FormData>({
-    resolver: zodResolver(cosignerSchema),
+    resolver: zodResolver(sellerSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -98,11 +98,11 @@ export function AddCosignerDialog({ open, onOpenChange, onSuccess, initialData }
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{initialData ? "Edit Cosigner" : "Add New Cosigner"}</DialogTitle>
+          <DialogTitle>{initialData ? "Edit Seller" : "Add New Seller"}</DialogTitle>
           <DialogDescription>
             {initialData 
-              ? "Update the cosigner's details below." 
-              : "Enter the details for the new cosigner."}
+              ? "Update the seller's details below." 
+              : "Enter the details for the new seller."}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -181,7 +181,7 @@ export function AddCosignerDialog({ open, onOpenChange, onSuccess, initialData }
             <DialogFooter>
               <Button type="submit" disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                {initialData ? "Save Changes" : "Create Cosigner"}
+                {initialData ? "Save Changes" : "Create Seller"}
               </Button>
             </DialogFooter>
           </form>

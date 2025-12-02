@@ -31,7 +31,7 @@ const formSchema = basicInfoSchema.merge(addressInfoSchema)
 
 type FormData = z.infer<typeof formSchema>
 
-export function CosignerSignupForm() {
+export function SellerSignupForm() {
   const [step, setStep] = useState(1)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -76,10 +76,10 @@ export function CosignerSignupForm() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 2000))
     
-    console.log("Cosigner Form Data:", data)
+    console.log("Seller Form Data:", data)
     
     setIsLoading(false)
-    toast.success("Cosigner registered successfully!")
+    toast.success("Seller registered successfully!")
     // Redirect would happen here
   }
 

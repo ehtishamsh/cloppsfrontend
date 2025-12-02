@@ -2,7 +2,7 @@ export interface User {
   id: string
   email: string
   name: string
-  role: "marketplace" | "cosigner" | "bidder"
+  role: "marketplace" | "seller" | "bidder"
 }
 
 export const authService = {
@@ -30,12 +30,12 @@ export const authService = {
       }
     }
 
-    // Cosigner login (default)
+    // seller login (default)
     return {
       id: "user_2",
       email,
       name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1),
-      role: "cosigner",
+      role: "seller",
     }
   },
 

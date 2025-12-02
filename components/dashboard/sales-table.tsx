@@ -1,20 +1,16 @@
+"use client"
+
 import { useState, useMemo, useEffect } from "react"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import { ColumnDef } from "@tanstack/react-table"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Trash2, Plus, Save, Calculator } from "lucide-react"
+import { Trash2, Save, Calculator, Pencil, ArrowUpDown } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { eventService, type SaleEntry } from "@/services/events"
 import { LoadingSkeleton } from "@/components/shared/loading"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { DataTable } from "@/components/ui/data-table"
+import { AddSaleDialog } from "@/components/dashboard/add-sale-dialog"
 
 interface SalesTableProps {
   status?: string
@@ -26,20 +22,11 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
   const [entries, setEntries] = useState<SaleEntry[]>([])
   const [isLoading, setIsLoading] = useState(true)
   
-  // New row state
-  const [newRow, setNewRow] = useState<Partial<SaleEntry>>({
-    lotNumber: "",
-    bidderNumber: "",
-    title: "",
-    price: 0,
-  })
-
   // Edit state
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editRow, setEditRow] = useState<Partial<SaleEntry>>({})
 
   // Settings (Mock)
-  const taxRate = 0.0825
   const commissionRate = 0.10
 
   useEffect(() => {
@@ -65,26 +52,8 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
     return { subtotal, commission }
   }, [entries])
 
-  const handleAddRow = async () => {
-    if (!newRow.lotNumber || !newRow.bidderNumber || !newRow.price) {
-      toast.error("Please fill in all required fields")
-      return
-    }
-
-    try {
-      const sale = await eventService.addSale("EVT-001", {
-        lotNumber: newRow.lotNumber,
-        bidderNumber: newRow.bidderNumber,
-        title: newRow.title || "",
-        price: Number(newRow.price),
-      })
-      
-      setEntries([...entries, sale])
-      setNewRow({ lotNumber: "", bidderNumber: "", title: "", price: 0 })
-      toast.success("Sale added")
-    } catch (error) {
-      toast.error("Failed to add sale")
-    }
+  const handleAddSuccess = (sale: SaleEntry) => {
+    setEntries([...entries, sale])
   }
 
   const handleDeleteRow = async (id: string) => {
@@ -141,6 +110,145 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
     }
   }
 
+  const columns: ColumnDef<SaleEntry>[] = [
+    {
+      accessorKey: "lotNumber",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Lot #
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const isEditing = editingId === row.original.id
+        return isEditing ? (
+          <Input 
+            value={editRow.lotNumber} 
+            onChange={(e) => setEditRow({...editRow, lotNumber: e.target.value})}
+            className="h-8 w-full"
+          />
+        ) : (
+          <span className="font-medium">{row.getValue("lotNumber")}</span>
+        )
+      },
+    },
+    {
+      accessorKey: "bidderNumber",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Bidder #
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+      cell: ({ row }) => {
+        const isEditing = editingId === row.original.id
+        return isEditing ? (
+          <Input 
+            value={editRow.bidderNumber} 
+            onChange={(e) => setEditRow({...editRow, bidderNumber: e.target.value})}
+            className="h-8 w-full"
+          />
+        ) : (
+          <span>{row.getValue("bidderNumber")}</span>
+        )
+      },
+    },
+    {
+      accessorKey: "title",
+      header: "Item Title",
+      cell: ({ row }) => {
+        const isEditing = editingId === row.original.id
+        return isEditing ? (
+          <Input 
+            value={editRow.title} 
+            onChange={(e) => setEditRow({...editRow, title: e.target.value})}
+            className="h-8 w-full"
+          />
+        ) : (
+          <span>{row.getValue("title")}</span>
+        )
+      },
+    },
+    {
+      accessorKey: "price",
+      header: ({ column }) => {
+        return (
+          <div className="text-right">
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              Price
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        )
+      },
+      cell: ({ row }) => {
+        const isEditing = editingId === row.original.id
+        return isEditing ? (
+          <Input 
+            type="number"
+            value={editRow.price} 
+            onChange={(e) => setEditRow({...editRow, price: Number(e.target.value)})}
+            className="h-8 w-full text-right"
+          />
+        ) : (
+          <div className="text-right">
+            ${(row.getValue("price") as number).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+        )
+      },
+    },
+    {
+      id: "actions",
+      header: () => <div className="text-right">Actions</div>,
+      cell: ({ row }) => {
+        const isEditing = editingId === row.original.id
+        return isEditing ? (
+          <div className="flex justify-end gap-2">
+            <Button size="icon" variant="ghost" onClick={saveEdit} className="h-8 w-8 text-green-600">
+              <Save className="h-4 w-4" />
+            </Button>
+            <Button size="icon" variant="ghost" onClick={cancelEdit} className="h-8 w-8">
+              <Trash2 className="h-4 w-4 rotate-45" />
+            </Button>
+          </div>
+        ) : (
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => startEdit(row.original)}
+              className="mr-2"
+            >
+              <Pencil className="h-4 w-4 mr-2" />
+              Edit
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => handleDeleteRow(row.original.id)}
+              className="h-8 w-8 text-destructive hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </div>
+        )
+      },
+    },
+  ]
+
   if (isLoading) {
     return <LoadingSkeleton />
   }
@@ -171,141 +279,11 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
         </Card>
       </div>
 
-      <div className="rounded-md border">
-        <ScrollArea className="w-full whitespace-nowrap rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[80px]">Lot #</TableHead>
-                <TableHead className="w-[80px]">Bidder #</TableHead>
-                <TableHead>Item Title</TableHead>
-                <TableHead className="w-[120px] text-right">Price</TableHead>
-                <TableHead className="w-[100px] text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {entries.map((entry) => (
-                <TableRow key={entry.id}>
-                  {editingId === entry.id ? (
-                    <>
-                      <TableCell>
-                        <Input 
-                          value={editRow.lotNumber} 
-                          onChange={(e) => setEditRow({...editRow, lotNumber: e.target.value})}
-                          className="h-8 w-full"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input 
-                          value={editRow.bidderNumber} 
-                          onChange={(e) => setEditRow({...editRow, bidderNumber: e.target.value})}
-                          className="h-8 w-full"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input 
-                          value={editRow.title} 
-                          onChange={(e) => setEditRow({...editRow, title: e.target.value})}
-                          className="h-8 w-full"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Input 
-                          type="number"
-                          value={editRow.price} 
-                          onChange={(e) => setEditRow({...editRow, price: Number(e.target.value)})}
-                          className="h-8 w-full text-right"
-                        />
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button size="icon" variant="ghost" onClick={saveEdit} className="h-8 w-8 text-green-600">
-                            <Save className="h-4 w-4" />
-                          </Button>
-                          <Button size="icon" variant="ghost" onClick={cancelEdit} className="h-8 w-8">
-                            <Trash2 className="h-4 w-4 rotate-45" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </>
-                  ) : (
-                    <>
-                      <TableCell className="font-medium">{entry.lotNumber}</TableCell>
-                      <TableCell>{entry.bidderNumber}</TableCell>
-                      <TableCell>{entry.title}</TableCell>
-                      <TableCell className="text-right">${entry.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell className="text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => startEdit(entry)}
-                          className="mr-2"
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleDeleteRow(entry.id)}
-                          className="h-8 w-8 text-destructive hover:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </TableCell>
-                    </>
-                  )}
-                </TableRow>
-              ))}
-              
-              {/* Input Row */}
-              <TableRow className="bg-muted/50">
-                <TableCell>
-                  <Input
-                    placeholder="Lot #"
-                    value={newRow.lotNumber}
-                    onChange={(e) => setNewRow({ ...newRow, lotNumber: e.target.value })}
-                    className="h-8"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Input
-                    placeholder="Bidder #"
-                    value={newRow.bidderNumber}
-                    onChange={(e) => setNewRow({ ...newRow, bidderNumber: e.target.value })}
-                    className="h-8"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Input
-                    placeholder="Item Title"
-                    value={newRow.title}
-                    onChange={(e) => setNewRow({ ...newRow, title: e.target.value })}
-                    className="h-8"
-                  />
-                </TableCell>
-                <TableCell>
-                  <Input
-                    type="number"
-                    placeholder="0.00"
-                    value={newRow.price || ""}
-                    onChange={(e) => setNewRow({ ...newRow, price: parseFloat(e.target.value) })}
-                    className="h-8 text-right"
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") handleAddRow()
-                    }}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Button size="icon" onClick={handleAddRow} className="h-8 w-8">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-          <ScrollBar orientation="horizontal" />
-        </ScrollArea>
+      <div className="flex justify-end">
+        <AddSaleDialog eventId="EVT-001" onSuccess={handleAddSuccess} />
       </div>
+
+      <DataTable columns={columns} data={entries} searchKey="title" placeholder="Filter by item title..." />
 
       <div className="flex justify-end">
         {status === "Live" ? (

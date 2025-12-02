@@ -18,17 +18,17 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Save, Loader2, Calendar, DollarSign } from "lucide-react"
 import { toast } from "sonner"
-import { cosignerService } from "@/services/cosigner"
+import { sellerService } from "@/services/seller"
 
-export default function CosignerDetailsPage({ 
+export default function SellerDetailsPage({ 
   params 
 }: { 
-  params: Promise<{ cosignerId: string }>
+  params: Promise<{ sellerId: string }>
 }) {
-  const { cosignerId } = use(params)
+  const { sellerId } = use(params)
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
-  const [cosigner, setCosigner] = useState<any>(null)
+  const [seller, setSeller] = useState<any>(null)
   const [events, setEvents] = useState<any[]>([])
   const [isSaving, setIsSaving] = useState(false)
 
@@ -38,13 +38,13 @@ export default function CosignerDetailsPage({
 
   const loadData = async () => {
     try {
-      // Load cosigner details
-      const allCosigners = await cosignerService.getCosigners()
-      const foundCosigner = allCosigners.find(c => c.id === cosignerId)
-      setCosigner(foundCosigner)
+      // Load Seller details
+      const allSellers = await sellerService.getSellers()
+      const foundSeller = allSellers.find(s => s.id === sellerId)
+      setSeller(foundSeller)
 
-      // Load cosigner's event history from service
-      const eventHistory = await cosignerService.getCosignerDetails(cosignerId)
+      // Load seller's event history from service
+      const eventHistory = await sellerService.getSellerDetails(sellerId)
       setEvents(eventHistory)
     } catch (error) {
       toast.error("Failed to load data")
@@ -73,8 +73,8 @@ export default function CosignerDetailsPage({
     )
   }
 
-  if (!cosigner) {
-    return <div>Cosigner not found</div>
+  if (!seller) {
+    return <div>Seller not found</div>
   }
 
   const totalSales = events.reduce((acc, e) => acc + e.totalSales, 0)
@@ -89,10 +89,10 @@ export default function CosignerDetailsPage({
           Back
         </Button>
         <h1 className="text-3xl font-bold tracking-tight">
-          Cosigner: {cosigner.name}
+          Seller: {seller.name}
         </h1>
-        <Badge variant={cosigner.status === 'approved' ? 'default' : 'secondary'}>
-          {cosigner.status}
+        <Badge variant={seller.status === 'approved' ? 'default' : 'secondary'}>
+          {seller.status}
         </Badge>
       </div>
 
@@ -106,30 +106,30 @@ export default function CosignerDetailsPage({
         <TabsContent value="profile" className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Cosigner Information</CardTitle>
+              <CardTitle>Seller Information</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input id="firstName" defaultValue={cosigner.name.split(' ')[0]} />
+                  <Input id="firstName" defaultValue={seller.name.split(' ')[0]} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input id="lastName" defaultValue={cosigner.name.split(' ')[1] || ''} />
+                  <Input id="lastName" defaultValue={seller.name.split(' ')[1] || ''} />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" defaultValue={cosigner.email} />
+                <Input id="email" defaultValue={seller.email} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone</Label>
-                <Input id="phone" defaultValue={cosigner.phone} />
+                <Input id="phone" defaultValue={seller.phone} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="nickname">Business Name / Nickname</Label>
-                <Input id="nickname" defaultValue={cosigner.nickname || ''} />
+                <Input id="nickname" defaultValue={seller.nickname || ''} />
               </div>
               <Button onClick={handleSave} disabled={isSaving}>
                 {isSaving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
