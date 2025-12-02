@@ -14,6 +14,9 @@ export interface BidderPurchase {
   lotNumber: string
   itemTitle: string
   price: number
+  premium: number
+  tax: number
+  total: number
   date: string
   eventId: string
   eventName: string
@@ -64,6 +67,9 @@ const MOCK_PURCHASES: BidderPurchase[] = [
     lotNumber: "105",
     itemTitle: "1965 Ford Mustang",
     price: 45000,
+    premium: 6750, // 15%
+    tax: 2812.50, // 6.25%
+    total: 54562.50,
     date: "2024-04-15",
     eventId: "1",
     eventName: "Spring Classic Car Auction",
@@ -73,6 +79,9 @@ const MOCK_PURCHASES: BidderPurchase[] = [
     lotNumber: "112",
     itemTitle: "Vintage Gas Pump",
     price: 2500,
+    premium: 375, // 15%
+    tax: 156.25, // 6.25%
+    total: 3031.25,
     date: "2024-04-15",
     eventId: "1",
     eventName: "Spring Classic Car Auction",

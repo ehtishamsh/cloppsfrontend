@@ -1,12 +1,6 @@
-import { SellerSignupForm } from "@/components/auth/seller-signup-form";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import Link from "next/link";
+import { SellerSignupForm } from "@/components/auth/seller-signup-form"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from "next/link"
 
 export default function SellerSignupPage() {
   return (
@@ -16,23 +10,20 @@ export default function SellerSignupPage() {
           Seller Registration
         </h1>
         <p className="text-sm text-muted-foreground">
-          Register as a dealer to sale items in auctions
+          Register as a dealer to consign items in auctions
         </p>
       </div>
-
+      
       <div className="grid gap-6">
         <SellerSignupForm />
       </div>
 
       <div className="text-center text-sm text-muted-foreground">
         Already have an account?{" "}
-        <Link
-          href="/login"
-          className="underline underline-offset-4 hover:text-primary"
-        >
+        <Link href="/login" className="underline underline-offset-4 hover:text-primary">
           Sign in
         </Link>
       </div>
     </div>
-  );
+  )
 }

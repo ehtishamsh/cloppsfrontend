@@ -60,7 +60,6 @@ export function SellerInvoices() {
             <TableHead className="text-right">Lots Sold</TableHead>
             <TableHead className="text-right">Sale Price</TableHead>
             <TableHead className="text-right">Commission</TableHead>
-            <TableHead className="text-right">Sales Tax</TableHead>
             <TableHead className="text-right">Total Due</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="text-right">Action</TableHead>
@@ -75,7 +74,6 @@ export function SellerInvoices() {
               <TableCell className="text-right">{invoice.lotsSold}</TableCell>
               <TableCell className="text-right">${invoice.salePrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
               <TableCell className="text-right text-red-600">-${invoice.commission.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-              <TableCell className="text-right text-red-600">-${invoice.salesTax.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
               <TableCell className="text-right font-bold">${invoice.totalDue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
               <TableCell>
                 <Badge variant={invoice.status === "Paid" ? "default" : "secondary"}>

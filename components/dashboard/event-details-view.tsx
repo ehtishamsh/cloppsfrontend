@@ -70,8 +70,8 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
       const commission = price * commissionRate
       const buyerPremium = price * buyerPremiumRate
       const tax = price * taxRate
-      // Assuming Total is the total amount processed/involved
-      const total = price + commission + buyerPremium + tax
+      // Total is the total amount paid by the buyer
+      const total = price + buyerPremium + tax
 
       totalSales += price
       totalCommission += commission
@@ -87,13 +87,15 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
       }
     })
 
-    const grandTotal = totalSales + totalCommission + totalBuyerPremium + totalTax
+    const marketplaceEarnings = totalCommission + totalBuyerPremium
+    const grandTotal = totalSales + totalBuyerPremium + totalTax
 
     return {
       totalSales,
       totalCommission,
       totalBuyerPremium,
       totalTax,
+      marketplaceEarnings,
       grandTotal,
       detailedSales,
       commissionRate: event.commissionRate,
@@ -221,7 +223,7 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
                 <CardTitle>Event Financial Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                   <div className="rounded-lg border p-4">
                     <div className="text-sm font-medium text-muted-foreground">Total Sales</div>
                     <div className="text-2xl font-bold">
@@ -229,7 +231,7 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
                     </div>
                   </div>
                   <div className="rounded-lg border p-4">
-                    <div className="text-sm font-medium text-muted-foreground">Default Commission</div>
+                    <div className="text-sm font-medium text-muted-foreground">Commission</div>
                     <div className="text-2xl font-bold text-green-600">
                       {financials?.totalCommission.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </div>
@@ -246,6 +248,7 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
                       ({financials?.buyerPremiumRate}%)
                     </div>
                   </div>
+               
                   <div className="rounded-lg border p-4">
                     <div className="text-sm font-medium text-muted-foreground">Tax</div>
                     <div className="text-2xl font-bold text-red-600">
@@ -255,9 +258,9 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
                       ({financials?.taxRate}%)
                     </div>
                   </div>
-                  <div className="rounded-lg border p-4 bg-green-50">
-                    <div className="text-sm font-medium text-muted-foreground">Total</div>
-                    <div className="text-2xl font-bold text-green-600">
+                  <div className="rounded-lg border p-4">
+                    <div className="text-sm font-medium text-muted-foreground">Total Transaction</div>
+                    <div className="text-2xl font-bold">
                       {financials?.grandTotal.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </div>
                   </div>

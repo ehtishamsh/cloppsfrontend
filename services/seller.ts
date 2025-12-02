@@ -15,7 +15,6 @@ export interface Invoice {
   lotsSold: number
   salePrice: number
   commission: number
-  salesTax: number
   totalDue: number
   status: "Paid" | "Pending"
 }
@@ -83,8 +82,7 @@ const MOCK_INVOICES: Invoice[] = [
     lotsSold: 3,
     salePrice: 15000.00,
     commission: 1500.00,
-    salesTax: 1200.00,
-    totalDue: 12300.00,
+    totalDue: 13500.00, // 15000 - 1500
     status: "Paid",
   },
   {
@@ -95,8 +93,7 @@ const MOCK_INVOICES: Invoice[] = [
     lotsSold: 5,
     salePrice: 500.00,
     commission: 50.00,
-    salesTax: 40.00,
-    totalDue: 410.00,
+    totalDue: 450.00, // 500 - 50
     status: "Paid",
   },
 ]

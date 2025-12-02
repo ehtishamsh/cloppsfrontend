@@ -57,6 +57,33 @@ export function PurchasesTable({ data }: PurchasesTableProps) {
       ),
     },
     {
+      accessorKey: "premium",
+      header: () => <div className="text-right">Buyer's Premium</div>,
+      cell: ({ row }) => (
+        <div className="text-right text-red-600">
+          ${(row.getValue("premium") as number).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "tax",
+      header: () => <div className="text-right">Sales Tax</div>,
+      cell: ({ row }) => (
+        <div className="text-right text-red-600">
+          ${(row.getValue("tax") as number).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "total",
+      header: () => <div className="text-right">Total</div>,
+      cell: ({ row }) => (
+        <div className="text-right font-bold">
+          ${(row.getValue("total") as number).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </div>
+      ),
+    },
+    {
       accessorKey: "date",
       header: "Date",
     },
