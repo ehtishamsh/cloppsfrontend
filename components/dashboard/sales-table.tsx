@@ -77,7 +77,7 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
   }
 
   const saveEdit = async () => {
-    if (!editingId || !editRow.lotNumber || !editRow.bidderNumber || !editRow.price) {
+    if (!editingId || !editRow.lotNumber || !editRow.buyerNumber || !editRow.price) {
       toast.error("Please fill in all required fields")
       return
     }
@@ -138,14 +138,14 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
       },
     },
     {
-      accessorKey: "bidderNumber",
+      accessorKey: "buyerNumber",
       header: ({ column }) => {
         return (
           <Button
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Bidder #
+            Buyer #
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         )
@@ -154,12 +154,12 @@ export function SalesTable({ status, onPostAuction, onGenerateInvoices }: SalesT
         const isEditing = editingId === row.original.id
         return isEditing ? (
           <Input 
-            value={editRow.bidderNumber} 
-            onChange={(e) => setEditRow({...editRow, bidderNumber: e.target.value})}
+            value={editRow.buyerNumber} 
+            onChange={(e) => setEditRow({...editRow, buyerNumber: e.target.value})}
             className="h-8 w-full"
           />
         ) : (
-          <span>{row.getValue("bidderNumber")}</span>
+          <span>{row.getValue("buyerNumber")}</span>
         )
       },
     },

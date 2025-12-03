@@ -27,14 +27,14 @@ export function AddSaleDialog({ eventId, onSuccess }: AddSaleDialogProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [formData, setFormData] = useState({
     lotNumber: "",
-    bidderNumber: "",
+    buyerNumber: "",
     title: "",
     price: "",
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!formData.lotNumber || !formData.bidderNumber || !formData.price) {
+    if (!formData.lotNumber || !formData.buyerNumber || !formData.price) {
       toast.error("Please fill in all required fields")
       return
     }
@@ -43,13 +43,13 @@ export function AddSaleDialog({ eventId, onSuccess }: AddSaleDialogProps) {
     try {
       const sale = await eventService.addSale(eventId, {
         lotNumber: formData.lotNumber,
-        bidderNumber: formData.bidderNumber,
+        buyerNumber: formData.buyerNumber,
         title: formData.title,
         price: Number(formData.price),
       })
       onSuccess(sale)
       setOpen(false)
-      setFormData({ lotNumber: "", bidderNumber: "", title: "", price: "" })
+      setFormData({ lotNumber: "", buyerNumber: "", title: "", price: "" })
       toast.success("Sale added successfully")
     } catch (error) {
       toast.error("Failed to add sale")
@@ -87,13 +87,13 @@ export function AddSaleDialog({ eventId, onSuccess }: AddSaleDialogProps) {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="bidderNumber" className="text-right">
-                Bidder #
+              <Label htmlFor="buyerNumber" className="text-right">
+                Buyer #
               </Label>
               <Input
-                id="bidderNumber"
-                value={formData.bidderNumber}
-                onChange={(e) => setFormData({ ...formData, bidderNumber: e.target.value })}
+                id="buyerNumber"
+                value={formData.buyerNumber}
+                onChange={(e) => setFormData({ ...formData, buyerNumber: e.target.value })}
                 className="col-span-3"
               />
             </div>

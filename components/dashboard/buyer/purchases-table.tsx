@@ -1,0 +1,93 @@
+"use client"
+
+import { ColumnDef } from "@tanstack/react-table"
+import { Button } from "@/components/ui/button"
+import { DataTable } from "@/components/ui/data-table"
+import { BuyerPurchase } from "@/services/bidder" 
+import { ArrowUpDown } from "lucide-react"
+
+interface PurchasesTableProps {
+  data: BuyerPurchase[]
+}
+
+export function PurchasesTable({ data }: PurchasesTableProps) {
+  const columns: ColumnDef<BuyerPurchase>[] = [
+    {
+      accessorKey: "eventName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant="ghost"
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Event
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        )
+      },
+    },
+    {
+      accessorKey: "lotNumber",
+      header: "Lot #",
+    },
+    {
+      accessorKey: "itemTitle",
+      header: "Item",
+      cell: ({ row }) => <span className="font-medium">{row.getValue("itemTitle")}</span>,
+    },
+    {
+      accessorKey: "price",
+      header: ({ column }) => {
+        return (
+          <div className="text-right">
+            <Button
+              variant="ghost"
+              onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+            >
+              Price
+              <ArrowUpDown className="ml-2 h-4 w-4" />
+            </Button>
+          </div>
+        )
+      },
+      cell: ({ row }) => (
+        <div className="text-right">
+          ${(row.getValue("price") as number).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "premium",
+      header: () => <div className="text-right">Buyer's Premium</div>,
+      cell: ({ row }) => (
+        <div className="text-right text-red-600">
+          ${(row.getValue("premium") as number).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "tax",
+      header: () => <div className="text-right">Sales Tax</div>,
+      cell: ({ row }) => (
+        <div className="text-right text-red-600">
+          ${(row.getValue("tax") as number).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "total",
+      header: () => <div className="text-right">Total</div>,
+      cell: ({ row }) => (
+        <div className="text-right font-bold">
+          ${(row.getValue("total") as number).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        </div>
+      ),
+    },
+    {
+      accessorKey: "date",
+      header: "Date",
+    },
+  ]
+
+  return <DataTable columns={columns} data={data} searchKey="itemTitle" placeholder="Filter by item..." />
+}

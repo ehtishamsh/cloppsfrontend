@@ -19,7 +19,7 @@ export interface Event {
 export interface SaleEntry {
   id: string
   lotNumber: string
-  bidderNumber: string
+  buyerNumber: string
   buyerName?: string
   sellerId?: string
   title: string
@@ -110,7 +110,7 @@ const MOCK_SALES: SaleEntry[] = [
   { 
     id: "1", 
     lotNumber: "101", 
-    bidderNumber: "55", 
+    buyerNumber: "55", 
     title: "1967 Shelby GT500", 
     price: 185000, 
     category: "Automobiles", 
@@ -121,7 +121,7 @@ const MOCK_SALES: SaleEntry[] = [
   { 
     id: "2", 
     lotNumber: "102", 
-    bidderNumber: "12", 
+    buyerNumber: "12", 
     title: "19th Century Oil Painting", 
     price: 1200, 
     category: "Art", 
@@ -132,7 +132,7 @@ const MOCK_SALES: SaleEntry[] = [
   { 
     id: "3", 
     lotNumber: "103", 
-    bidderNumber: "89", 
+    buyerNumber: "89", 
     title: "Vintage Rolex Submariner", 
     price: 12500, 
     category: "Jewelry", 
@@ -143,7 +143,7 @@ const MOCK_SALES: SaleEntry[] = [
   { 
     id: "4", 
     lotNumber: "104", 
-    bidderNumber: "33", 
+    buyerNumber: "33", 
     title: "Eames Lounge Chair", 
     price: 4500, 
     category: "Furniture", 
@@ -154,7 +154,7 @@ const MOCK_SALES: SaleEntry[] = [
   { 
     id: "5", 
     lotNumber: "105", 
-    bidderNumber: "12", 
+    buyerNumber: "12", 
     title: "Gibson Les Paul 1959 Reissue", 
     price: 6500, 
     category: "Musical Instruments", 
@@ -165,7 +165,7 @@ const MOCK_SALES: SaleEntry[] = [
   { 
     id: "6", 
     lotNumber: "106", 
-    bidderNumber: "77", 
+    buyerNumber: "77", 
     title: "Diamond Tennis Bracelet", 
     price: 8900, 
     category: "Jewelry", 
@@ -176,7 +176,7 @@ const MOCK_SALES: SaleEntry[] = [
   { 
     id: "7", 
     lotNumber: "107", 
-    bidderNumber: "42", 
+    buyerNumber: "42", 
     title: "First Edition Harry Potter", 
     price: 2500, 
     category: "Books", 
@@ -263,7 +263,7 @@ export const eventService = {
     return newSale
   },
 
-  async getEventBidders(eventId: string) {
+  async getEventBuyers(eventId: string) {
     await delay(500)
     return [
       { id: "BID-101", paddleNumber: "101", name: "John Smith", email: "john@example.com", phone: "555-0101", status: "approved", itemsBought: 5, totalSpent: 12500 },
@@ -283,8 +283,8 @@ export const eventService = {
   async getBuyerDetails(buyerId: string) {
     await delay(500)
     // Mock buyer details
-    const bidders = await this.getEventBidders("any")
-    return bidders.find(b => b.id === buyerId)
+    const buyers = await this.getEventBuyers("any")
+    return buyers.find(b => b.id === buyerId)
   },
 
   async getBuyerPurchases(buyerId: string, eventId: string) {

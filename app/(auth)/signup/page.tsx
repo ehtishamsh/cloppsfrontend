@@ -48,14 +48,14 @@ export default function SignupPage() {
           </Card>
         </Link>
 
-        <Link href="/signup/bidder">
+        <Link href="/signup/buyer">
           <Card className="hover:border-primary hover:bg-primary/5 transition-all cursor-pointer group">
             <CardHeader className="flex flex-row items-center gap-4 pb-2">
               <div className="h-10 w-10 rounded-lg bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground transition-colors flex items-center justify-center text-primary">
                 <Gavel className="h-6 w-6" />
               </div>
               <div className="space-y-1">
-                <CardTitle className="text-base">Bidder</CardTitle>
+                <CardTitle className="text-base">Buyer</CardTitle>
                 <CardDescription>
                   I want to bid on items in auctions
                 </CardDescription>

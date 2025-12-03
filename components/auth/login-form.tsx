@@ -43,9 +43,9 @@ export function LoginForm() {
       if (user.role === "marketplace") {
         toast.success("Welcome to Marketplace Dashboard!")
         router.push("/marketplace/events")
-      } else if (user.role === "bidder") {
-        toast.success("Welcome to Bidder Dashboard!")
-        router.push("/bidder")
+      } else if (user.role === "buyer") {
+        toast.success("Welcome to Buyer Dashboard!")
+        router.push("/buyer")
       } else {
         toast.success("Welcome to seller Dashboard!")
         router.push("/seller")
@@ -57,13 +57,13 @@ export function LoginForm() {
     }
   }
 
-  const handleMockLogin = (type: "marketplace" | "seller" | "bidder") => {
+  const handleMockLogin = (type: "marketplace" | "seller" | "buyer") => {
     if (type === "marketplace") {
       form.setValue("email", "admin@clopps.com")
       form.setValue("password", "admin123")
-    } else if (type === "bidder") {
+    } else if (type === "buyer") {
       form.setValue("email", "john@example.com")
-      form.setValue("password", "bidder123")
+      form.setValue("password", "buyer123")
     } else {
       form.setValue("email", "jane@example.com")
       form.setValue("password", "seller123")
@@ -102,16 +102,16 @@ export function LoginForm() {
             </Button>
           </div>
           <div className="mt-3 space-y-1">
-            <p className="font-medium">Bidder:</p>
+            <p className="font-medium">Buyer:</p>
             <p className="text-sm">Email: <code className="bg-muted px-1 rounded">john@example.com</code></p>
-            <p className="text-sm">Password: <code className="bg-muted px-1 rounded">bidder123</code></p>
+            <p className="text-sm">Password: <code className="bg-muted px-1 rounded">buyer123</code></p>
             <Button 
               variant="outline" 
               size="sm" 
-              onClick={() => handleMockLogin("bidder")}
+              onClick={() => handleMockLogin("buyer")}
               className="mt-1"
             >
-              Fill Bidder Credentials
+              Fill Buyer Credentials
             </Button>
           </div>
         </AlertDescription>

@@ -1,6 +1,6 @@
 import { delay } from "@/lib/utils"
 
-export interface BidderEnrollment {
+export interface BuyerEnrollment {
   id: string
   eventId: string
   eventName: string
@@ -9,7 +9,7 @@ export interface BidderEnrollment {
   date: string
 }
 
-export interface BidderPurchase {
+export interface BuyerPurchase {
   id: string
   lotNumber: string
   itemTitle: string
@@ -22,7 +22,7 @@ export interface BidderPurchase {
   eventName: string
 }
 
-export interface BidderStatement {
+export interface BuyerStatement {
   id: string
   eventId: string
   eventName: string
@@ -43,7 +43,7 @@ export interface AvailableEvent {
   description?: string
 }
 
-const MOCK_ENROLLMENTS: BidderEnrollment[] = [
+const MOCK_ENROLLMENTS: BuyerEnrollment[] = [
   {
     id: "ENR-001",
     eventId: "1",
@@ -61,7 +61,7 @@ const MOCK_ENROLLMENTS: BidderEnrollment[] = [
   },
 ]
 
-const MOCK_PURCHASES: BidderPurchase[] = [
+const MOCK_PURCHASES: BuyerPurchase[] = [
   {
     id: "PUR-001",
     lotNumber: "105",
@@ -88,7 +88,7 @@ const MOCK_PURCHASES: BidderPurchase[] = [
   },
 ]
 
-const MOCK_STATEMENTS: BidderStatement[] = [
+const MOCK_STATEMENTS: BuyerStatement[] = [
   {
     id: "STMT-2024-001",
     eventId: "1",
@@ -163,18 +163,18 @@ const MOCK_AVAILABLE_EVENTS: AvailableEvent[] = [
   },
 ]
 
-export const bidderService = {
-  getEnrollments: async (): Promise<BidderEnrollment[]> => {
+export const buyerService = {
+  getEnrollments: async (): Promise<BuyerEnrollment[]> => {
     await delay(500)
     return MOCK_ENROLLMENTS
   },
 
-  getPurchases: async (): Promise<BidderPurchase[]> => {
+  getPurchases: async (): Promise<BuyerPurchase[]> => {
     await delay(500)
     return MOCK_PURCHASES
   },
 
-  getStatements: async (): Promise<BidderStatement[]> => {
+  getStatements: async (): Promise<BuyerStatement[]> => {
     await delay(500)
     return MOCK_STATEMENTS
   },
@@ -203,7 +203,7 @@ export const bidderService = {
 
   register: async (data: any): Promise<void> => {
     await delay(1000)
-    // In a real app, this would create a new bidder account
-    console.log("Registered bidder:", data)
+    // In a real app, this would create a new buyer account
+    console.log("Registered buyer:", data)
   },
 }

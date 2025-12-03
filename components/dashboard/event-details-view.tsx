@@ -8,8 +8,7 @@ import { Calendar, MapPin, Users, DollarSign, FileText, ArrowLeft, PlayCircle, P
 import Link from "next/link"
 import { SalesTable } from "@/components/dashboard/sales-table"
 import { SellerManagement } from "@/components/dashboard/seller-management"
-import { EventReports } from "@/components/dashboard/event-reports"
-import { EventBidders } from "@/components/dashboard/event-bidders"
+import { EventBuyers } from "@/components/dashboard/event-buyers"
 import { Separator } from "@/components/ui/separator"
 import { eventService } from "@/services/events"
 import { LoadingSkeleton } from "@/components/shared/loading"
@@ -191,10 +190,7 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
             <Users className="h-4 w-4" />
             Buyers
           </TabsTrigger>
-          <TabsTrigger value="reports" className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
-            Reports
-          </TabsTrigger>
+
         </TabsList>
 
         <TabsContent value="sales" className="space-y-4">
@@ -223,7 +219,7 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
                 <CardTitle>Event Financial Summary</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   <div className="rounded-lg border p-4">
                     <div className="text-sm font-medium text-muted-foreground">Total Sales</div>
                     <div className="text-2xl font-bold">
@@ -258,12 +254,7 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
                       ({financials?.taxRate}%)
                     </div>
                   </div>
-                  <div className="rounded-lg border p-4">
-                    <div className="text-sm font-medium text-muted-foreground">Total Transaction</div>
-                    <div className="text-2xl font-bold">
-                      {financials?.grandTotal.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                    </div>
-                  </div>
+               
                 </div>
               </CardContent>
             </Card>
@@ -290,7 +281,7 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
                     {financials?.detailedSales.map((sale: any) => (
                       <TableRow key={sale.id}>
                         <TableCell>{sale.sellerId || "N/A"}</TableCell>
-                        <TableCell>{sale.bidderNumber}</TableCell>
+                        <TableCell>{sale.buyerNumber}</TableCell>
                         <TableCell>{sale.title}</TableCell>
                         <TableCell className="text-right">
                           {sale.price.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 })}
@@ -340,13 +331,10 @@ export function EventDetailsView({ eventId }: { eventId: string }) {
         </TabsContent>
 
         <TabsContent value="buyers">
-          <EventBidders eventId={eventId} />
+          <EventBuyers eventId={eventId} />
         </TabsContent>
 
-        <TabsContent value="reports">
-          <EventReports eventId={eventId} />
-        </TabsContent>
-      </Tabs>
+        </Tabs>
     </div>
   )
 }

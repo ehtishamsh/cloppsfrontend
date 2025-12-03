@@ -172,7 +172,7 @@ export default function HomePage() {
                          <div className="h-6 w-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
                             <CheckCircle2 className="h-4 w-4" />
                          </div>
-                         <span className="font-medium">Bidder engagement metrics</span>
+                         <span className="font-medium">Buyer engagement metrics</span>
                       </li>
                       <li className="flex items-center gap-3">
                          <div className="h-6 w-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
